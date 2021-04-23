@@ -1,34 +1,34 @@
 import {
-    SimpleGrid,
-    VStack,
-    ButtonGroup,
-    Button,
-    FormControl,
-    Select,
-    NumberInput,
-    InputGroup,
-    NumberInputField,
-    InputRightElement,
-    FormHelperText,
-    HStack,
     Box,
+    Button,
+    ButtonGroup,
+    FormControl,
+    FormHelperText,
+    Heading,
+    HStack,
     Input,
+    InputGroup,
+    InputRightElement,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    SimpleGrid,
     Slider,
-    SliderTrack,
     SliderFilledTrack,
     SliderThumb,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    Heading,
+    SliderTrack,
     Table,
     Tbody,
-    Tr,
     Td,
     Text,
+    Tr,
+    VStack,
 } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
 import React from "react"
+import MarketSelector from "./MarketSelector"
 
 function Trade() {
     const [side, setSide] = React.useState("long")
@@ -58,14 +58,7 @@ function Trade() {
                     </Button>
                 </ButtonGroup>
 
-                <FormControl id="market">
-                    <SmallFormLabel>Market</SmallFormLabel>
-                    <Select>
-                        <option value="option1">BTC / USDC</option>
-                        <option value="option1">ETH / USDC</option>
-                        <option value="option1">PERP / USDC</option>
-                    </Select>
-                </FormControl>
+                <MarketSelector />
 
                 <FormControl id="margin">
                     <SmallFormLabel>Margin</SmallFormLabel>

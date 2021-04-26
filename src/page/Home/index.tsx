@@ -1,8 +1,9 @@
 import React from "react"
 import { Tabs, TabList, Tab, Text, Spacer, TabPanels, Heading, Stack, TabPanel } from "@chakra-ui/react"
 import { User } from "../../container/user"
-import Trade from "./component/Trade"
+import TradeComponent from "./component/Trade"
 import Position from "./component/Position"
+import { Trade } from "./container/trade"
 
 const Home = () => {
     const {
@@ -19,7 +20,9 @@ const Home = () => {
             </TabList>
             <TabPanels>
                 <TabPanel py={8} px={3}>
-                    <Trade />
+                    <Trade.Provider>
+                        <TradeComponent />
+                    </Trade.Provider>
                 </TabPanel>
                 <TabPanel py={8} px={3}>
                     <Position />

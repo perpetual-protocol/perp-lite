@@ -14,7 +14,7 @@ function useTrade() {
     /* min: 0.1%, max: 1% */
     const [slippage, setSlippage] = useState<number>(0.5)
 
-    const [margin, setMargin] = useState<Big | null>(null)
+    const [margin, setMargin] = useState<string>("")
 
     return useMemo(
         () => ({

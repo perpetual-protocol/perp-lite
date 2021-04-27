@@ -43,3 +43,17 @@ export function formatNumber(number: string = "") {
 export function formatNumberWithPrecision(number: Big = new Big(0)) {
     return formatNumber(number.toFixed(FIXED_PRECISION))
 }
+
+// ex: if the input is 1.005 and the digits is 2, the function will return 1.00
+export function formatInput(input: string, digits: number): string {
+    const firstDotIndex = input.indexOf(".")
+    const formattedString = input
+        .split("")
+        .filter((alphabet, index) => {
+            return alphabet !== "." || index === firstDotIndex
+        })
+        .join("")
+    return formattedString.includes(".") && formattedString.length > formattedString.indexOf(".") + (digits + 1)
+        ? formattedString.substr(0, formattedString.indexOf(".") + (digits + 1))
+        : formattedString
+}

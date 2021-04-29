@@ -1,12 +1,11 @@
-import { useMemo } from "react"
-import { constants } from "ethers"
-import { createContainer } from "unstated-next"
 import { getStage, Stage } from "constant"
-import { MetaData } from "container/metadata"
-import { Erc20Factory } from "types/contracts/Erc20Factory"
-import { ClearingHouseViewerFactory } from "types/contracts/ClearingHouseViewerFactory"
 import { Connection } from "container/connection"
-import { CHAIN_ID } from "connector"
+import { MetaData } from "container/metadata"
+import { constants } from "ethers"
+import { useMemo } from "react"
+import { ClearingHouseViewerFactory } from "types/contracts/ClearingHouseViewerFactory"
+import { Erc20Factory } from "types/contracts/Erc20Factory"
+import { createContainer } from "unstated-next"
 
 export const Contract = createContainer(useContract)
 

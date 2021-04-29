@@ -31,6 +31,11 @@ export function big2Decimal(val: Big): Decimal {
     }
 }
 
+// Decimal to...
+export function decimal2Big(decimal: Decimal): Big {
+    return bigNum2Big(decimal.d)
+}
+
 // check regex 101 online, https://regex101.com/r/EeneAE/1
 // to understand this regex
 const regexUSLocaleNumber = new RegExp(/\d(?=(\d{3})+\.)/g)

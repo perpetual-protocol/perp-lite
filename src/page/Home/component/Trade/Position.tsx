@@ -3,13 +3,13 @@ import SmallFormLabel from "component/SmallFormLabel"
 import { Global } from "container/global"
 import React from "react"
 
-function Collateral() {
+function Position() {
     const {
         state: { amm },
     } = Global.useContainer()
     return (
-        <FormControl id="collateral">
-            <SmallFormLabel>Collateral</SmallFormLabel>
+        <FormControl id="position">
+            <SmallFormLabel>Position</SmallFormLabel>
             <InputGroup>
                 <Input variant="filled" isReadOnly value="0.431" />
                 <InputRightElement w="54px">
@@ -29,4 +29,4 @@ function Collateral() {
     )
 }
 
-export default Collateral
+export default Position

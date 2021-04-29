@@ -1,6 +1,6 @@
 import { SimpleGrid, VStack } from "@chakra-ui/react"
 import React from "react"
-import Collateral from "./Collateral"
+import Position from "./Position"
 import Leverage from "./Leverage"
 import Margin from "./Margin"
 import MarketSelector from "./MarketSelector"
@@ -15,7 +15,7 @@ function Trade() {
                 <SideSwitcher />
                 <MarketSelector />
                 <Margin />
-                <Collateral />
+                <Position />
                 <Leverage />
                 <Slippage />
             </VStack>

@@ -18,13 +18,15 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
 export enum CHAIN_ID {
     Ethereum = 1,
     Rinkeby = 4,
+    XDai = 100,
 }
 
-const { REACT_APP_INFURA_API_KEY } = process.env
+const { REACT_APP_INFURA_API_KEY, REACT_APP_XDAI_RPC_URL } = process.env
 
 const RPC_URLS = {
     [CHAIN_ID.Ethereum]: `https://mainnet.infura.io/v3/${REACT_APP_INFURA_API_KEY}`,
     [CHAIN_ID.Rinkeby]: `https://rinkeby.infura.io/v3/${REACT_APP_INFURA_API_KEY}`,
+    [CHAIN_ID.XDai]: REACT_APP_XDAI_RPC_URL!,
 }
 
 export const network = new NetworkConnector({
@@ -39,8 +41,14 @@ export function getNetworkLibrary(): Web3Provider {
     ) as unknown) as Web3Provider
 }
 
+export function getXDaiNetworkLibrary(): Web3Provider {
+    return (new providers.JsonRpcProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+}
+
 // see all chain ids in https://chainid.network/
-export const injected = new InjectedConnector({ supportedChainIds: [CHAIN_ID.Ethereum, CHAIN_ID.Rinkeby] })
+export const injected = new InjectedConnector({
+    supportedChainIds: [CHAIN_ID.Ethereum, CHAIN_ID.Rinkeby, CHAIN_ID.XDai],
+})
 
 export const walletConnect = new WalletConnectConnector({
     rpc: IS_MAINNET

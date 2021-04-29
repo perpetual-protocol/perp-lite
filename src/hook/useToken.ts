@@ -8,14 +8,18 @@ import { Connection } from "../container/connection"
 import { Transaction, TransactionAction } from "../container/transaction"
 import { big2BigNum, bigNum2Big } from "../util/format"
 import { useContractCall } from "./useContractCall"
+import { CHAIN_ID } from "connector"
 
-export function useToken(address: string, decimals: number) {
-    const { multicallProvider, account, signer } = Connection.useContainer()
-    const { erc20 } = Contract.useContainer()
+export function useToken(address: string, decimals: number, chainId: CHAIN_ID) {
+    const { xDaiMulticallProvider, ethMulticallProvider, account, signer } = Connection.useContainer()
+    const { erc20: erc20Contract } = Contract.useContainer()
     const { executeWithGasLimit } = Transaction.useContainer()
     const [balance, setBalance] = useState(BIG_ZERO)
     const [allowance, setAllowance] = useState<Record<string, Big>>({})
     const [totalSupply, setTotalSupply] = useState(BIG_ZERO)
+
+    const multicallProvider = chainId === CHAIN_ID.XDai ? xDaiMulticallProvider : ethMulticallProvider
+    const erc20 = chainId === CHAIN_ID.XDai ? erc20Contract?.XDai : erc20Contract?.Eth
 
     const contract = useMemo(() => {
         return erc20?.attach(address) || null

@@ -1,10 +1,12 @@
 import { useMemo } from "react"
 import { constants } from "ethers"
 import { createContainer } from "unstated-next"
-import { getStage, Stage } from "../../constant"
-import { MetaData } from "../metadata"
-import { Erc20Factory } from "../../types/contracts/Erc20Factory"
+import { getStage, Stage } from "constant"
+import { MetaData } from "container/metadata"
+import { Erc20Factory } from "types/contracts/Erc20Factory"
+import { ClearingHouseViewerFactory } from "types/contracts/ClearingHouseViewerFactory"
 import { Connection } from "container/connection"
+import { CHAIN_ID } from "connector"
 
 export const Contract = createContainer(useContract)
 
@@ -22,40 +24,41 @@ export const CONTRACT_ADDRESS = ((stage: Stage) =>
     }[stage]))(getStage())
 
 // NOTE: get contract address from metadata config endpoints
-// function getAddressFromConfig(config: any) {
-//     const {
-//         layers: {
-//             layer1: {
-//                 contracts: { StakedPerpToken, PerpStakingRewardVesting, PerpStakingRewardNoVesting },
-//                 externalContracts: { perp },
-//             },
-//         },
-//     } = config
-//     return {
-//         StakePerpToken: StakedPerpToken.address,
-//         PerpToken: perp,
-//         ImmediateVesting: PerpStakingRewardNoVesting?.address || "0x08fa612A94bBEeC0cE0aFD870132ca729848EFe8",
-//         TimedVesting: PerpStakingRewardVesting.address,
-//     }
-// }
+function getAddressFromConfig(config: any) {
+    const {
+        layers: {
+            layer2: {
+                contracts: { ClearingHouseViewer },
+            },
+        },
+    } = config
+    return {
+        ClearingHouseViewer: ClearingHouseViewer.address,
+    }
+}
 
 const defaultContractInstance = {
     isInitialized: false,
     erc20: null,
+    clearingHouseViewer: null,
 }
 
 function useContract() {
     const { config } = MetaData.useContainer()
-    const { provider } = Connection.useContainer()
+    const { ethProvider, xDaiProvider } = Connection.useContainer()
 
     return useMemo(() => {
         if (!config) {
             return defaultContractInstance
         }
-        // const contractAddress = getAddressFromConfig(config)
+        const contractAddress = getAddressFromConfig(config)
         return {
             isInitialized: true,
-            erc20: Erc20Factory.connect(constants.AddressZero, provider),
+            erc20: {
+                Eth: Erc20Factory.connect(constants.AddressZero, ethProvider),
+                XDai: Erc20Factory.connect(constants.AddressZero, xDaiProvider),
+            },
+            clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
         }
-    }, [config, provider])
+    }, [config, ethProvider, xDaiProvider])
 }

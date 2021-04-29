@@ -2,28 +2,37 @@ import { useState, useEffect } from "react"
 import { createContainer } from "unstated-next"
 import { useWeb3React } from "@web3-react/core"
 import { Provider as MulticallProvider } from "ethers-multicall"
-import { getNetworkLibrary } from "connector"
+import { getNetworkLibrary, getXDaiNetworkLibrary } from "connector"
 
 export const Connection = createContainer(useConnection)
 
-const readOnlyProvider = getNetworkLibrary()
+const ethReadOnlyProvider = getNetworkLibrary()
+const xDaiReadOnlyProvider = getXDaiNetworkLibrary()
 
 function useConnection() {
-    const { account, library, active } = useWeb3React()
-    const [multicallProvider, setMulticallProvider] = useState<MulticallProvider | null>(null)
+    const { account, library, active, chainId } = useWeb3React()
+    const [ethMulticallProvider, setMulticallProvider] = useState<MulticallProvider | null>(null)
+    const [xDaiMulticallProvider, setXDaiMulticallProvider] = useState<MulticallProvider | null>(null)
 
+    // create read only multicall provider
     useEffect(() => {
-        if (library) {
-            const ethMulticallProvider = new MulticallProvider(library)
-            ethMulticallProvider.init().then(() => setMulticallProvider(ethMulticallProvider))
-        }
-    }, [library])
+        const _ethMulticallProvider = new MulticallProvider(ethReadOnlyProvider)
+        const _xDaiMulticallProvider = new MulticallProvider(xDaiReadOnlyProvider)
+
+        Promise.all([_ethMulticallProvider.init(), _xDaiMulticallProvider.init()]).then(() => {
+            setMulticallProvider(_ethMulticallProvider)
+            setXDaiMulticallProvider(_xDaiMulticallProvider)
+        })
+    }, [])
 
     return {
-        multicallProvider,
-        provider: library || readOnlyProvider,
+        ethMulticallProvider,
+        xDaiMulticallProvider,
+        ethProvider: ethReadOnlyProvider,
+        xDaiProvider: xDaiReadOnlyProvider,
         signer: library?.getSigner() || null,
         active,
         account,
+        chainId,
     }
 }

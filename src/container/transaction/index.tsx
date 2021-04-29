@@ -11,6 +11,7 @@ import { BigNumber } from "ethers"
 import { useLocalStorage } from "hook/useLocalStorage"
 import { STORAGE_KEY } from "constant/storage"
 import { Connection } from "container/connection"
+import { CHAIN_ID } from "connector"
 
 export const Transaction = createContainer(useTransaction)
 
@@ -69,7 +70,9 @@ function useTransaction() {
     const {
         state: { address },
     } = User.useContainer()
-    const { provider } = Connection.useContainer()
+
+    const { xDaiProvider, ethProvider, chainId } = Connection.useContainer()
+    const provider = chainId === CHAIN_ID.XDai ? xDaiProvider : ethProvider
 
     const resetTxStatus = useCallback(() => {
         setIsLoading(false)

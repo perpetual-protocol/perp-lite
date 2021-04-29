@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { IS_MAINNET } from "../../constant"
+import { IS_MAINNET } from "constant"
+import { Amm } from "constant/amm"
 
 export const MetaData = createContainer(useMetaData)
 
@@ -22,8 +23,37 @@ function useMetaData() {
             })
     }, [])
 
+    const ammList = useMemo(() => {
+        if (config) {
+            return getAmmList(config)
+        } else {
+            return []
+        }
+    }, [config])
+
     return {
         isLoading,
         config,
+        ammList,
     }
+}
+
+function getAmmList(config: any): Amm[] {
+    const contracts = config.layers?.layer2?.contracts
+    if (!contracts || typeof contracts !== "object") {
+        return []
+    }
+    return Object.keys(contracts)
+        .filter((rawName: string) => {
+            const contract = contracts[rawName]
+            return contract.name === "Amm"
+        })
+        .sort((a, b) => a.localeCompare(b))
+        .map((rawName: string) => {
+            const contract = contracts[rawName]
+            return {
+                name: rawName.slice(0, rawName.length - 4),
+                address: contract.address,
+            }
+        })
 }

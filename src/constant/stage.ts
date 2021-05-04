@@ -1,5 +1,3 @@
-export const NetworkContextName = "network"
-
 export enum Stage {
     Production = "production",
     Staging = "staging",

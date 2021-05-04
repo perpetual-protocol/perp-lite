@@ -1,5 +1,5 @@
 import { Web3Provider } from "@ethersproject/providers"
-import { IS_MAINNET } from "../constant"
+import { IS_MAINNET } from "../constant/stage"
 import { InjectedConnector } from "@web3-react/injected-connector"
 import { NetworkConnector } from "@web3-react/network-connector"
 import { providers } from "ethers"
@@ -58,3 +58,5 @@ export const walletConnect = new WalletConnectConnector({
         : { [CHAIN_ID.Rinkeby]: RPC_URLS[CHAIN_ID.Rinkeby] },
     pollingInterval: 15000,
 })
+
+export class LedgerProvider {}

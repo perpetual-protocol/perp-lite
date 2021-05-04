@@ -1,15 +1,11 @@
 import { FormControl, Select } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import { Global } from "container/global"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo } from "react"
 import { Amm as AmmType } from "constant/amm"
 import { Amm } from "container/amm"
 
 function MarketSelector() {
-    const { ammMap } = Amm.useContainer()
-    const {
-        actions: { selectAmm },
-    } = Global.useContainer()
+    const { isLoading: isLoadingAmmMap, ammMap, setSelectedAmm } = Amm.useContainer()
 
     const sortedAmmList = useMemo(() => {
         if (!ammMap) {
@@ -18,20 +14,29 @@ function MarketSelector() {
         return Object.values(ammMap).sort((a, b) => a.baseAssetSymbol.localeCompare(b.baseAssetSymbol))
     }, [ammMap])
 
+    useEffect(() => {
+        /* use local storage to impl setDefaultSelectedAmm would be better */
+        function setDefaultSelectedAmm() {
+            setSelectedAmm(sortedAmmList[0].baseAssetSymbol)
+        }
+        if (sortedAmmList && sortedAmmList.length > 0) {
+            setDefaultSelectedAmm()
+        }
+    }, [setSelectedAmm, sortedAmmList])
+
     const handleOnChange = useCallback(
         e => {
             const index = e.target.value
             const name = sortedAmmList[index].baseAssetSymbol
-            const address = sortedAmmList[index].address
-            selectAmm(name, address)
+            setSelectedAmm(name)
         },
-        [sortedAmmList, selectAmm],
+        [sortedAmmList, setSelectedAmm],
     )
 
     return (
         <FormControl id="market">
             <SmallFormLabel>Market</SmallFormLabel>
-            <Select onChange={handleOnChange}>
+            <Select onChange={handleOnChange} isDisabled={isLoadingAmmMap}>
                 {sortedAmmList.map((amm: AmmType, index: number) => (
                     <option key={`${amm.baseAssetSymbol}-${amm.quoteAssetSymbol}`} value={index}>
                         {amm.baseAssetSymbol} / {amm.quoteAssetSymbol}

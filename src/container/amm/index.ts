@@ -12,6 +12,8 @@ function useAmm() {
     const { insuranceFund, amm, addressMap } = Contract.useContainer()
     const { xDaiMulticallProvider } = Connection.useContainer()
     const [ammMap, setAmmMap] = useState<Record<string, AmmType> | null>(null)
+    const [selectedAmm, setSelectedAmm] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         async function getRawAmmList() {
@@ -48,6 +50,7 @@ function useAmm() {
                     }
                 })
                 setAmmMap(_ammMap)
+                setIsLoading(false)
             }
         }
 
@@ -57,7 +60,9 @@ function useAmm() {
     }, [addressMap, amm, insuranceFund, xDaiMulticallProvider])
 
     return {
+        isLoading,
         ammMap,
-        // selectedAmm: "ETH"
+        selectedAmm,
+        setSelectedAmm,
     }
 }

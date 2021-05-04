@@ -34,6 +34,7 @@ function getAddressFromConfig(config: any) {
         layers: {
             layer2: {
                 contracts: { ClearingHouseViewer, ClearingHouse, InsuranceFund, AmmReader },
+                externalContracts: { tether: XDaiTether, usdc: XDaiUsdc },
             },
         },
     } = config
@@ -42,6 +43,7 @@ function getAddressFromConfig(config: any) {
         InsuranceFund: InsuranceFund.address,
         AmmReader: AmmReader.address,
         ClearingHouse: ClearingHouse.address,
+        XDaiUsdc: XDaiUsdc || XDaiTether, // remove this part once the perp metadata config only provide one quoteAssetSymbol address
     }
 }
 

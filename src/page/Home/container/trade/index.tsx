@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
+import { Side } from "constant/trade"
 
 export const Trade = createContainer(useTrade)
 
 function useTrade() {
     /* long = 1, short = 0 */
-    const [side, setSide] = useState<0 | 1>(1)
+    const [side, setSide] = useState<Side>(Side.Long)
 
     /* min: 1, max: 10 */
     const [leverage, setLeverage] = useState<number>(1)
@@ -13,7 +14,7 @@ function useTrade() {
     /* min: 0.1%, max: 1% */
     const [slippage, setSlippage] = useState<number>(0.5)
 
-    const [margin, setMargin] = useState<string>("")
+    const [collateral, setCollateral] = useState<string>("")
 
     return useMemo(
         () => ({
@@ -23,9 +24,9 @@ function useTrade() {
             setLeverage,
             slippage,
             setSlippage,
-            margin,
-            setMargin,
+            collateral,
+            setCollateral,
         }),
-        [leverage, margin, side, slippage],
+        [leverage, collateral, side, slippage],
     )
 }

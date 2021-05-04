@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Heading, HStack, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react"
+import { Badge, Box, Button, Heading, HStack, SimpleGrid, Spacer, Stack } from "@chakra-ui/react"
 import React from "react"
 import DataUnit from "./DataUnit"
 import { PositionInfo } from "constant/position"

@@ -1,15 +1,10 @@
 import React from "react"
 import { Tabs, TabList, Tab, Text, Spacer, TabPanels, Heading, Stack, TabPanel } from "@chakra-ui/react"
-import { User } from "../../container/user"
 import TradeComponent from "./component/Trade"
 import Position from "./component/Position"
 import { Trade } from "./container/trade"
 
 const Home = () => {
-    const {
-        state: { address },
-    } = User.useContainer()
-
     return (
         <Tabs size="md" mt={5} defaultIndex={0} variant="soft-rounded">
             <TabList>

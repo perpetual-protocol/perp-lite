@@ -1,13 +1,17 @@
-import { getStage, Stage } from "constant"
+import { getStage, Stage } from "constant/stage"
 import { Connection } from "container/connection"
 import { MetaData } from "container/metadata"
 import { constants } from "ethers"
 import { useMemo } from "react"
-import { InsuranceFundFactory } from "types/contracts/InsuranceFundFactory"
-import { ClearingHouseViewerFactory } from "types/contracts/ClearingHouseViewerFactory"
-import { Erc20Factory } from "types/contracts/Erc20Factory"
+import {
+    ClearingHouseViewer__factory as ClearingHouseViewerFactory,
+    ERC20__factory as Erc20Factory,
+    Amm__factory as AmmFactory,
+    AmmReader__factory as AmmReaderFactory,
+    ClearingHouse__factory as ClearingHouseFactory,
+    InsuranceFund__factory as InsuranceFundFactory,
+} from "types/contracts"
 import { createContainer } from "unstated-next"
-import { AmmFactory, AmmReaderFactory } from "types/contracts"
 
 export const Contract = createContainer(useContract)
 
@@ -29,7 +33,7 @@ function getAddressFromConfig(config: any) {
     const {
         layers: {
             layer2: {
-                contracts: { ClearingHouseViewer, InsuranceFund, AmmReader },
+                contracts: { ClearingHouseViewer, ClearingHouse, InsuranceFund, AmmReader },
                 externalContracts: { tether: XDaiTether, usdc: XDaiUsdc },
             },
         },
@@ -38,6 +42,7 @@ function getAddressFromConfig(config: any) {
         ClearingHouseViewer: ClearingHouseViewer.address,
         InsuranceFund: InsuranceFund.address,
         AmmReader: AmmReader.address,
+        ClearingHouse: ClearingHouse.address,
         XDaiUsdc: XDaiUsdc || XDaiTether, // remove this part once the perp metadata config only provide one quoteAssetSymbol address
     }
 }
@@ -46,6 +51,7 @@ const defaultContractInstance = {
     isInitialized: false,
     erc20: null,
     clearingHouseViewer: null,
+    clearingHouse: null,
     insuranceFund: null,
     amm: null,
     addressMap: null,
@@ -66,11 +72,12 @@ function useContract() {
                 Eth: Erc20Factory.connect(constants.AddressZero, ethProvider),
                 XDai: Erc20Factory.connect(constants.AddressZero, xDaiProvider),
             },
-            clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
             insuranceFund: InsuranceFundFactory.connect(contractAddress.InsuranceFund, xDaiProvider),
             ammReader: AmmReaderFactory.connect(contractAddress.AmmReader, xDaiProvider),
             amm: AmmFactory.connect(constants.AddressZero, xDaiProvider),
             addressMap: contractAddress,
+            clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
+            clearingHouse: ClearingHouseFactory.connect(contractAddress.ClearingHouse, xDaiProvider),
         }
     }, [config, ethProvider, xDaiProvider])
 }

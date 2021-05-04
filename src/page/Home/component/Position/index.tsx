@@ -1,5 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/layout"
 import ClearingHouseViewerArtifact from "@perp/contract/build/contracts/src/ClearingHouseViewer.sol/ClearingHouseViewer.json"
+import { Amm } from "container/amm"
 import { Connection } from "container/connection"
 import { Contract } from "container/contract"
 import { MetaData } from "container/metadata"
@@ -8,43 +9,46 @@ import React, { useEffect, useState } from "react"
 import { decimal2Big } from "util/format"
 import { getClearingHouseViewerAddress } from "util/getClearingHouseViewerAddress"
 import PositionUnit from "./component/PositionUnit"
+import { PositionInfo } from "constant/position"
 
 function Position() {
-    const { ammList, config } = MetaData.useContainer()
+    const { config } = MetaData.useContainer()
     const { account, xDaiMulticallProvider } = Connection.useContainer()
     const { clearingHouseViewer } = Contract.useContainer()
-    const [positionInfo, setPositionInfo] = useState<any>([])
+    const { ammMap } = Amm.useContainer()
+    const [positionInfo, setPositionInfo] = useState<PositionInfo[]>([])
     const clearingHouseViewerAddress = getClearingHouseViewerAddress(config)
 
     useEffect(() => {
         async function getTraderPositionInfo() {
-            let _positionInfo
             try {
                 const clearingHouseViewerContract = new MulticallContract(
                     clearingHouseViewerAddress,
                     ClearingHouseViewerArtifact.abi,
                 )
-                _positionInfo = await xDaiMulticallProvider!.all(
-                    (ammList.map(amm =>
+                const sortedAmmList = Object.values(ammMap!).sort((a, b) =>
+                    a.baseAssetSymbol.localeCompare(b.baseAssetSymbol),
+                )
+                const rawPositionInfo = await xDaiMulticallProvider!.all(
+                    (sortedAmmList.map(amm =>
                         clearingHouseViewerContract!.getPersonalPositionWithFundingPayment(amm.address, account!),
                     ) as unknown) as ContractCall[],
                 )
-                _positionInfo = _positionInfo.map((info: any, index: number) => ({
-                    ...ammList[index],
-                    ...info,
+                const processedPositionInfo: PositionInfo[] = rawPositionInfo.map((info: any, index: number) => ({
+                    ...sortedAmmList[index],
                     size: decimal2Big(info.size),
                 }))
-                _positionInfo = _positionInfo.filter(info => !info.size.eq(0))
+                const _positionInfo: PositionInfo[] = processedPositionInfo.filter(info => !info.size.eq(0))
+                setPositionInfo(_positionInfo)
             } catch (err) {
                 console.log("debug:", "err:", err)
             }
-            setPositionInfo(_positionInfo)
         }
 
-        if (account && clearingHouseViewer && xDaiMulticallProvider && clearingHouseViewerAddress) {
+        if (ammMap && account && clearingHouseViewer && xDaiMulticallProvider && clearingHouseViewerAddress) {
             getTraderPositionInfo()
         }
-    }, [account, ammList, clearingHouseViewer, clearingHouseViewerAddress, xDaiMulticallProvider])
+    }, [account, ammMap, clearingHouseViewer, clearingHouseViewerAddress, xDaiMulticallProvider])
 
     return (
         <SimpleGrid columns={1} spacing={8}>

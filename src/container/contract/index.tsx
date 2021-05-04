@@ -3,9 +3,11 @@ import { Connection } from "container/connection"
 import { MetaData } from "container/metadata"
 import { constants } from "ethers"
 import { useMemo } from "react"
+import { InsuranceFundFactory } from "types/contracts/InsuranceFundFactory"
 import { ClearingHouseViewerFactory } from "types/contracts/ClearingHouseViewerFactory"
 import { Erc20Factory } from "types/contracts/Erc20Factory"
 import { createContainer } from "unstated-next"
+import { AmmFactory, AmmReaderFactory } from "types/contracts"
 
 export const Contract = createContainer(useContract)
 
@@ -27,12 +29,14 @@ function getAddressFromConfig(config: any) {
     const {
         layers: {
             layer2: {
-                contracts: { ClearingHouseViewer },
+                contracts: { ClearingHouseViewer, InsuranceFund, AmmReader },
             },
         },
     } = config
     return {
         ClearingHouseViewer: ClearingHouseViewer.address,
+        InsuranceFund: InsuranceFund.address,
+        AmmReader: AmmReader.address,
     }
 }
 
@@ -40,6 +44,9 @@ const defaultContractInstance = {
     isInitialized: false,
     erc20: null,
     clearingHouseViewer: null,
+    insuranceFund: null,
+    amm: null,
+    addressMap: null,
 }
 
 function useContract() {
@@ -58,6 +65,10 @@ function useContract() {
                 XDai: Erc20Factory.connect(constants.AddressZero, xDaiProvider),
             },
             clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
+            insuranceFund: InsuranceFundFactory.connect(contractAddress.InsuranceFund, xDaiProvider),
+            ammReader: AmmReaderFactory.connect(contractAddress.AmmReader, xDaiProvider),
+            amm: AmmFactory.connect(constants.AddressZero, xDaiProvider),
+            addressMap: contractAddress,
         }
     }, [config, ethProvider, xDaiProvider])
 }

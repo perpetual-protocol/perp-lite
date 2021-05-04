@@ -8,9 +8,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "pregenerate-types": "mkdir -p node_modules_tmp && npx copyfiles -e './node_modules/@perp/contract/build/contracts/src/**/*.dbg.json' -f './node_modules/@perp/contract/build/contracts/src/**/*.json' ./node_modules_tmp/",
-        "generate-types": "typechain --target ethers-v5 './node_modules_tmp/*.json' --outDir src/types/contracts",
-        "postgenerate-types": "rm -rf node_modules_tmp",
+        "generate-type": "ts-node script/generate-type.ts",
         "postinstall": "typesync",
         "prepare": "husky install"
     },
@@ -60,6 +58,7 @@
         "isomorphic-unfetch": "^3.1.0",
         "lint-staged": "^10.5.4",
         "prettier": "^2.2.1",
+        "ts-generator": "^0.1.1",
         "ts-node": "^9.1.1",
         "typechain": "3.0.0",
         "typesync": "^0.8.0",

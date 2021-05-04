@@ -1,24 +1,27 @@
 import { Badge, Box, Button, Heading, HStack, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react"
 import React from "react"
 import DataUnit from "./DataUnit"
+import { PositionInfo } from "constant/position"
+import { formatInput } from "util/format"
 
-// TODO: define proper data/info type
 interface PositionUnitProps {
-    data: any
+    data: PositionInfo
 }
 
 function PositionUnit({ data }: PositionUnitProps) {
-    const { name, size } = data
+    const { baseAssetSymbol, size } = data
+    const isLongSide = size.gte(0)
+    const positionSize = formatInput(size.toString(), 4)
     return (
         <Box>
             <Stack direction="column" spacing={4} borderRadius="2xl" borderWidth="1px" borderColor="gray.200" p={6}>
                 <HStack>
-                    <Heading size="md">{name}</Heading>
-                    <Badge colorScheme="green">Long</Badge>
+                    <Heading size="md">{baseAssetSymbol}</Heading>
+                    <Badge colorScheme={isLongSide ? "green" : "red"}>{isLongSide ? "Long" : "Short"}</Badge>
                 </HStack>
                 <SimpleGrid minChildWidth={["40%", "30%", "20%"]} spacing={4}>
                     {/* <DataUnit label="PnL" value="+129" /> */}
-                    <DataUnit label="Position Size" value={size.toString()} />
+                    <DataUnit label="Position Size" value={positionSize} />
                     {/* <DataUnit label="Leverage" value="1.4×" />
                     <DataUnit label="Entry Price" value="1,398" />
                     <DataUnit label="Est.Liq.Price" value="943" />

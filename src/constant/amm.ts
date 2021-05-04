@@ -1,4 +1,5 @@
 export interface Amm {
-    name: string
     address: string
+    baseAssetSymbol: string
+    quoteAssetSymbol: string
 }

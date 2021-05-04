@@ -1,21 +1,19 @@
 import { Box, Button, FormHelperText, HStack } from "@chakra-ui/react"
 import { CHAIN_ID } from "connector"
 import { Connection } from "container/connection"
-import { MetaData } from "container/metadata"
+import { Contract } from "container/contract"
 import { useToken } from "hook/useToken"
 import { Trade } from "page/Home/container/trade"
 import React, { useCallback } from "react"
 import { formatInput, formatNumberWithPrecision } from "util/format"
-import { getXDaiUsdcAddress } from "util/getUsdcAddress"
 
 function MyBalance() {
-    const { config } = MetaData.useContainer()
     const { account } = Connection.useContainer()
     const { margin, setMargin } = Trade.useContainer()
+    const { addressMap } = Contract.useContainer()
 
     /* prepare balance data  */
-    const xDaiUsdcAddress = getXDaiUsdcAddress(config)
-    const { balance } = useToken(xDaiUsdcAddress, 6, CHAIN_ID.XDai)
+    const { balance } = useToken(addressMap?.XDaiUsdc, 6, CHAIN_ID.XDai)
 
     const handleOnClick = useCallback(() => {
         if (!margin || margin !== balance.toString()) {

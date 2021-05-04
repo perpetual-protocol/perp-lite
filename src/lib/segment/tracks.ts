@@ -22,3 +22,11 @@ function uiTrack(funcName: string, payload: UITrackPayload) {
 function uiTrackLink(element: HTMLElement, funcName: string, payload: UITrackPayload) {
     trackLink(element, funcName, { ...payload, type: EventType.UI })
 }
+
+// track meta transaction
+export function trackSendTxToFuncRequest(funcName: string, args: any[]) {
+    contractTrack(`${funcName} - Transaction Requested`, args)
+}
+export function trackSendTxToFuncSent(funcName: string, args: any[]) {
+    contractTrack(`${funcName} - Transaction Sent`, args)
+}

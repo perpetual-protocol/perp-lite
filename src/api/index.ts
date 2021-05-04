@@ -1,4 +1,4 @@
-import { IS_MAINNET } from "../constant"
+import { IS_MAINNET } from "../constant/stage"
 
 // TODO: might need to update this URL
 const BASE_URL = ""

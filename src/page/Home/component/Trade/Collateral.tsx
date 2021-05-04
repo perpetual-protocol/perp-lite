@@ -5,21 +5,23 @@ import React, { useCallback, useMemo } from "react"
 import MyBalance from "./MyBalance"
 import { formatInput } from "util/format"
 
-function Margin() {
-    const { margin, setMargin } = Trade.useContainer()
+function Collateral() {
+    const { collateral, setCollateral } = Trade.useContainer()
 
-    const handleOnChange = useCallback(
-        value => {
-            setMargin(formatInput(value, 2))
+    const handleOnInput = useCallback(
+        e => {
+            const value = e.target.value
+            const formattedValue = formatInput(value, 2)
+            setCollateral(formattedValue)
         },
-        [setMargin],
+        [setCollateral],
     )
 
     return useMemo(
         () => (
             <FormControl id="margin">
-                <SmallFormLabel>Margin</SmallFormLabel>
-                <NumberInput value={margin} onChange={handleOnChange}>
+                <SmallFormLabel>COLLATERAL</SmallFormLabel>
+                <NumberInput value={collateral} onInput={handleOnInput}>
                     <InputGroup>
                         <NumberInputField />
                         <InputRightElement w="54px">
@@ -39,8 +41,8 @@ function Margin() {
                 <MyBalance />
             </FormControl>
         ),
-        [handleOnChange, margin],
+        [collateral, handleOnInput],
     )
 }
 
-export default Margin
+export default Collateral

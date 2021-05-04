@@ -12,6 +12,7 @@ import {
     InsuranceFund__factory as InsuranceFundFactory,
 } from "types/contracts"
 import { createContainer } from "unstated-next"
+import { Amm } from "types/contracts/Amm"
 
 export const Contract = createContainer(useContract)
 
@@ -74,7 +75,7 @@ function useContract() {
             },
             insuranceFund: InsuranceFundFactory.connect(contractAddress.InsuranceFund, xDaiProvider),
             ammReader: AmmReaderFactory.connect(contractAddress.AmmReader, xDaiProvider),
-            amm: AmmFactory.connect(constants.AddressZero, xDaiProvider),
+            amm: AmmFactory.connect(constants.AddressZero, xDaiProvider) as Amm,
             addressMap: contractAddress,
             clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
             clearingHouse: ClearingHouseFactory.connect(contractAddress.ClearingHouse, xDaiProvider),

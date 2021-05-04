@@ -2,14 +2,17 @@ import { FormControl, InputGroup, Input, InputRightElement, Text } from "@chakra
 import SmallFormLabel from "component/SmallFormLabel"
 import { Amm } from "container/amm"
 import React from "react"
+import { usePositionSize } from "./hook/usePositionSize"
 
 function Position() {
     const { selectedAmm } = Amm.useContainer()
+    const { positionSize, isLoading } = usePositionSize()
+
     return (
         <FormControl id="position">
             <SmallFormLabel>Position</SmallFormLabel>
             <InputGroup>
-                <Input variant="filled" isReadOnly value="0.431" />
+                <Input variant="filled" isReadOnly value={isLoading ? "loading..." : positionSize} />
                 <InputRightElement w="54px">
                     <Text
                         w="100%"

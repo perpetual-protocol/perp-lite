@@ -1,19 +1,20 @@
 import { ButtonGroup, Button } from "@chakra-ui/react"
 import React, { useCallback } from "react"
 import { Trade } from "page/Home/container/trade"
+import { Side } from "constant/trade"
 
 function SideSwitcher() {
     const { side, setSide } = Trade.useContainer()
 
     const handleLongOnClick = useCallback(() => {
-        if (side !== 1) {
-            setSide(1)
+        if (side !== Side.Long) {
+            setSide(Side.Long)
         }
     }, [setSide, side])
 
     const handleShortOnClick = useCallback(() => {
-        if (side !== 0) {
-            setSide(0)
+        if (side !== Side.Short) {
+            setSide(Side.Short)
         }
     }, [setSide, side])
 

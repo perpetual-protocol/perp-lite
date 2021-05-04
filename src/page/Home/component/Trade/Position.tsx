@@ -1,12 +1,10 @@
 import { FormControl, InputGroup, Input, InputRightElement, Text } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import { Global } from "container/global"
+import { Amm } from "container/amm"
 import React from "react"
 
 function Position() {
-    const {
-        state: { amm },
-    } = Global.useContainer()
+    const { selectedAmm } = Amm.useContainer()
     return (
         <FormControl id="position">
             <SmallFormLabel>Position</SmallFormLabel>
@@ -21,7 +19,7 @@ function Position() {
                         color="gray.500"
                         textTransform="uppercase"
                     >
-                        {amm.name}
+                        {selectedAmm}
                     </Text>
                 </InputRightElement>
             </InputGroup>

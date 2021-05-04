@@ -2,6 +2,14 @@ import { BigNumber } from "ethers"
 
 const MAX_GAS_LIMIT = 12500000
 
+export class TxRejectError extends Error {
+    constructor() {
+        super()
+        this.name = "Transaction Reject Error"
+        this.message = ""
+    }
+}
+
 // These error classes will be used in the future when we refactor the error handling logic
 export class ExceedMaximumGasLimitError extends Error {
     public gasLimit: BigNumber

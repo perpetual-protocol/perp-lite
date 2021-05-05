@@ -31,7 +31,7 @@ function Leverage() {
                 <Box px={10} pt={4} pb={2} bg="blackAlpha.50" borderRadius="xl">
                     <Slider
                         onChange={handleOnChange}
-                        defaultValue={3}
+                        defaultValue={leverage}
                         min={1}
                         max={10}
                         step={0.5}

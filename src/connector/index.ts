@@ -42,7 +42,16 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export function getXDaiNetworkLibrary(): Web3Provider {
-    return (new providers.JsonRpcProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+    function isWebsocket(url: string) {
+        const protocol = url.split(":")[0]
+        return protocol === "wss"
+    }
+
+    if (isWebsocket(RPC_URLS[CHAIN_ID.XDai])) {
+        return (new providers.WebSocketProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+    } else {
+        return (new providers.JsonRpcProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+    }
 }
 
 // see all chain ids in https://chainid.network/

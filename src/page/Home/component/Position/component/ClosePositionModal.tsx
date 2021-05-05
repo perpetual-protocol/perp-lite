@@ -15,12 +15,17 @@ import {
     Divider,
     ModalFooter,
     Button,
-    useDisclosure,
 } from "@chakra-ui/react"
 import React from "react"
+import { PositionInfo } from "constant/position"
 
-function ClosePositionModal() {
-    const { isOpen, onClose } = useDisclosure()
+interface ClosePositionModalProps {
+    data: PositionInfo
+    isOpen: boolean
+    onClose: () => void
+}
+
+function ClosePositionModal({ data, isOpen, onClose }: ClosePositionModalProps) {
     return (
         <Modal isCentered motionPreset="slideInBottom" isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />

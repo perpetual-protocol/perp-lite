@@ -17,7 +17,7 @@ export class MetaTxExecutor extends MetaTxWrapper implements ClearingHouseAction
         metaTxGateway?: MetaTxGateway,
         account?: string | null,
     ) {
-        if (biconomyApiKey || biconomyGatewayApiId || biconomyTokenApiId) {
+        if (!biconomyApiKey || !biconomyGatewayApiId || !biconomyTokenApiId) {
             console.error("Meta Transaction Executor is not initialized correctly")
         }
 

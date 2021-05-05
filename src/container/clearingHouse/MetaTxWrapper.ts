@@ -6,7 +6,7 @@ import { CHAIN_ID } from "../../connector"
 import { trackSendTxToFuncRequest, trackSendTxToFuncSent } from "lib/segment"
 import { MetaTxGateway } from "types/contracts"
 import { BiconomyError } from "util/error"
-import { permittableTokenAbi } from "constant"
+import { permittableTokenABI } from "constant"
 import { LedgerProvider } from "connector"
 import { logger, LogMetadataSet } from "lib/errorReport"
 import { IS_MAINNET } from "../../constant"
@@ -234,7 +234,7 @@ export class MetaTxWrapper {
     }
 
     async permit(spender: string): Promise<string> {
-        const contract = new Contract(this.contract.address, permittableTokenAbi, this.contract.provider)
+        const contract = new Contract(this.contract.address, permittableTokenABI, this.contract.provider)
         const nonce = (await contract.nonces(this.account!)).toNumber()
         const name = await this.contract.name()
         const message: PermitMessage = {

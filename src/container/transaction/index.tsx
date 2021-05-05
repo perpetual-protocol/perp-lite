@@ -12,6 +12,7 @@ import { useLocalStorage } from "hook/useLocalStorage"
 import { STORAGE_KEY } from "constant/storage"
 import { Connection } from "container/connection"
 import { CHAIN_ID } from "connector"
+import { BiconomyError, TxRejectError } from "../../util/error"
 
 export const Transaction = createContainer(useTransaction)
 
@@ -46,14 +47,6 @@ const defaultOption = {
         title: "Transaction Sent",
         description: "It might take a few minutes",
     },
-}
-
-class TxRejectError extends Error {
-    constructor() {
-        super()
-        this.name = "Transaction Reject Error"
-        this.message = ""
-    }
 }
 
 const { LATEST_TX_DATA } = STORAGE_KEY
@@ -144,54 +137,97 @@ function useTransaction() {
         }
     }, [])
 
-    const execute = useCallback(
-        async (txAction: Promise<ContractTransaction>, option?: LatestTx) => {
-            const latestTxMetaData = preExecute(option)
-            const { infoTitle, infoDesc, successTitle, successDesc, errorTitle, errorDesc } = latestTxMetaData
-
-            let receipt: TransactionReceipt | null = null
-            let tx
+    const userConfirmTx = useCallback(
+        async (txAction: Promise<ContractTransaction | string>, metaData: Record<string, string>) => {
+            const { infoTitle, infoDesc, successTitle, successDesc } = metaData
+            let tx, txHash
+            let isRejected = false
+            let isMetaTx = false
             try {
                 setIsLoading(true)
                 tx = await txAction
+                isMetaTx = typeof tx === "string"
+                txHash = isMetaTx ? (tx as string) : (tx as ContractTransaction).hash
                 setLatestTxData(
                     JSON.stringify({
-                        ...latestTxMetaData,
-                        txHash: tx.hash,
+                        ...metaData,
+                        txHash,
                     }),
                 )
-                notifyInfo({
-                    title: <ExternalLink href={getEtherscanTxLink(tx.hash)}>{infoTitle}</ExternalLink>,
-                    description: infoDesc,
-                })
-            } catch (e) {
-                console.log(e)
-                setError(new TxRejectError())
+                if (!isMetaTx) {
+                    notifyInfo({
+                        title: <ExternalLink href={getEtherscanTxLink(txHash)}>{infoTitle}</ExternalLink>,
+                        description: infoDesc,
+                    })
+                } else {
+                    notifySuccess({
+                        title: <ExternalLink href={getEtherscanTxLink(txHash)}>{successTitle}</ExternalLink>,
+                        description: successDesc,
+                    })
+                }
+            } catch (err) {
+                if (err.code && err.code === 4001) {
+                    // it means user reject this tx
+                    isRejected = true
+                    setError(new TxRejectError())
+                    notifyError({
+                        title: "Transaction Rejected",
+                        description: "Please confirm transaction to continue.",
+                    })
+                } else if (err instanceof BiconomyError) {
+                    // failed tx via biconomy
+                    notifyError({
+                        title: "Transaction Failed",
+                        // description: `something wrong. please contact support`,
+                    })
+                    setError(err)
+                }
+                console.log(err)
                 resetTxStatus()
-                notifyError({ title: "Transaction Rejected", description: "Please confirm transaction to continue." })
+            }
+            return {
+                isRejected,
+                isMetaTx,
+                tx,
+                txHash,
+            }
+        },
+        [notifyInfo, notifySuccess, notifyError, setLatestTxData, resetTxStatus],
+    )
+
+    const execute = useCallback(
+        async (txAction: Promise<ContractTransaction | string>, option?: LatestTx) => {
+            const latestTxMetaData = preExecute(option)
+            const { successTitle, successDesc, errorTitle, errorDesc } = latestTxMetaData
+
+            let receipt: TransactionReceipt | null = null
+            const { tx, isRejected, isMetaTx, txHash } = await userConfirmTx(txAction, latestTxMetaData)
+
+            if (isRejected || isMetaTx) {
+                // NOTE: both cases are handled in `userConfirmTx`
+                // TODO: should interleave meta tx and contract tx
                 return
             }
 
             try {
-                receipt = await tx.wait()
+                receipt = await (tx as ContractTransaction).wait()
                 setReceipts(prev => [...prev, receipt as TransactionReceipt])
-                resetTxStatus()
                 notifySuccess({
-                    title: <ExternalLink href={getEtherscanTxLink(tx.hash)}>{successTitle}</ExternalLink>,
+                    title: <ExternalLink href={getEtherscanTxLink(txHash)}>{successTitle}</ExternalLink>,
                     description: successDesc,
                 })
             } catch (e) {
                 console.log(e)
                 setError(e)
-                resetTxStatus()
                 notifyError({
-                    title: <ExternalLink href={getEtherscanTxLink(tx.hash)}>{errorTitle}</ExternalLink>,
+                    title: <ExternalLink href={getEtherscanTxLink(txHash)}>{errorTitle}</ExternalLink>,
                     description: errorDesc,
                 })
             }
+            resetTxStatus()
             return receipt
         },
-        [notifyError, notifyInfo, notifySuccess, preExecute, resetTxStatus, setLatestTxData],
+        [notifyError, notifySuccess, preExecute, resetTxStatus, userConfirmTx],
     )
 
     const executeWithGasLimit = useCallback(

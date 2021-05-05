@@ -1,7 +1,7 @@
 import { ButtonGroup, Button } from "@chakra-ui/react"
 import React, { useCallback } from "react"
 import { Trade } from "page/Home/container/trade"
-import { Side } from "constant/trade"
+import { Side } from "constant"
 
 function SideSwitcher() {
     const { side, setSide } = Trade.useContainer()

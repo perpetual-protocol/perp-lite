@@ -17,6 +17,7 @@ import { setupBugsnag } from "./lib/errorReport"
 import { MetaData } from "./container/metadata"
 import { Connection } from "./container/connection"
 import { Amm } from "container/amm"
+import { ClearingHouse } from "container/clearingHouse"
 
 declare global {
     interface Window {
@@ -45,6 +46,7 @@ const Providers = ((...providers: any[]) => ({ children }: { children: React.Rea
     Transaction.Provider,
     Contract.Provider,
     Amm.Provider,
+    ClearingHouse.Provider,
 )
 
 ReactDOM.render(

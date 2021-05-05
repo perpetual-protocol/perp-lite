@@ -6,13 +6,14 @@ import { usePositionSize } from "./hook/usePositionSize"
 
 function Position() {
     const { selectedAmm } = Amm.useContainer()
-    const { positionSize, isLoading } = usePositionSize()
+    const { positionSize, isCalculating } = usePositionSize()
+    const baseAssetSymbol = selectedAmm?.baseAssetSymbol || ""
 
     return (
         <FormControl id="position">
             <SmallFormLabel>Position</SmallFormLabel>
             <InputGroup>
-                <Input variant="filled" isReadOnly value={isLoading ? "loading..." : positionSize} />
+                <Input variant="filled" isReadOnly value={isCalculating ? "calculating..." : positionSize} />
                 <InputRightElement w="54px">
                     <Text
                         w="100%"
@@ -22,7 +23,7 @@ function Position() {
                         color="gray.500"
                         textTransform="uppercase"
                     >
-                        {selectedAmm}
+                        {baseAssetSymbol}
                     </Text>
                 </InputRightElement>
             </InputGroup>

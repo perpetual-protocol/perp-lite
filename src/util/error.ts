@@ -36,3 +36,10 @@ export class BiconomyError extends Error {
         this.message = `${message}`
     }
 }
+
+export class AmmError extends Error {
+    constructor(public ammName: string, public funcName: string, public ammAddress: string, public message: string) {
+        super()
+        this.name = `AmmError:${ammName}:${funcName}`
+    }
+}

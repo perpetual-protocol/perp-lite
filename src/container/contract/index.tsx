@@ -10,6 +10,7 @@ import {
     AmmReader__factory as AmmReaderFactory,
     ClearingHouse__factory as ClearingHouseFactory,
     InsuranceFund__factory as InsuranceFundFactory,
+    MetaTxGateway__factory as MetaTxGatewayFactory,
 } from "types/contracts"
 import { createContainer } from "unstated-next"
 import { Amm } from "types/contracts/Amm"
@@ -34,7 +35,7 @@ function getAddressFromConfig(config: any) {
     const {
         layers: {
             layer2: {
-                contracts: { ClearingHouseViewer, ClearingHouse, InsuranceFund, AmmReader },
+                contracts: { ClearingHouseViewer, ClearingHouse, InsuranceFund, AmmReader, MetaTxGateway },
                 externalContracts: { tether: XDaiTether, usdc: XDaiUsdc },
             },
         },
@@ -45,6 +46,7 @@ function getAddressFromConfig(config: any) {
         AmmReader: AmmReader.address,
         ClearingHouse: ClearingHouse.address,
         XDaiUsdc: XDaiUsdc || XDaiTether, // remove this part once the perp metadata config only provide one quoteAssetSymbol address
+        MetaTxGateway: MetaTxGateway.address,
     }
 }
 
@@ -54,6 +56,7 @@ const defaultContractInstance = {
     clearingHouseViewer: null,
     clearingHouse: null,
     insuranceFund: null,
+    metaTxGateway: null,
     amm: null,
     addressMap: null,
 }
@@ -79,6 +82,7 @@ function useContract() {
             addressMap: contractAddress,
             clearingHouseViewer: ClearingHouseViewerFactory.connect(contractAddress.ClearingHouseViewer, xDaiProvider),
             clearingHouse: ClearingHouseFactory.connect(contractAddress.ClearingHouse, xDaiProvider),
+            metaTxGateway: MetaTxGatewayFactory.connect(contractAddress.MetaTxGateway, xDaiProvider),
         }
     }, [config, ethProvider, xDaiProvider])
 }

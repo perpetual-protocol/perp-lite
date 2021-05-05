@@ -5,6 +5,6 @@ export interface Amm {
 }
 
 export enum Dir {
-    ADD_TO_AMM = "0",
-    REMOVE_FROM_AMM = "1",
+    AddToAMM = "0",
+    RemoveFromAMM = "1",
 }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { Side } from "constant/trade"
+import { Side } from "constant"
 
 export const Trade = createContainer(useTrade)
 

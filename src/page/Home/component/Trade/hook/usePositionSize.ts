@@ -1,4 +1,4 @@
-import { Side, Dir } from "constant/trade"
+import { Side, Dir } from "constant"
 import { Amm } from "container/amm"
 import { Trade } from "page/Home/container/trade"
 import { useAmm } from "hook/useAmm"
@@ -8,14 +8,15 @@ import { big2Decimal, decimal2Big, formatInput } from "util/format"
 import { useDebounce } from "hook/useDebounce"
 
 export function usePositionSize() {
-    const { selectedAmm, ammMap } = Amm.useContainer()
+    const { selectedAmm } = Amm.useContainer()
     const { collateral, leverage, side } = Trade.useContainer()
+    const dir = side === Side.Long ? Dir.AddToAmm : Dir.RemoveFromAmm
 
-    const ammAddress = ammMap && selectedAmm ? ammMap[selectedAmm].address : ""
+    const ammAddress = selectedAmm?.address || ""
     const { contract } = useAmm(ammAddress)
 
     const [positionSize, setPositionSize] = useState<string>("")
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isCalculating, setIsCalculating] = useState<boolean>(false)
 
     const d_collateral = useDebounce({ value: collateral, delay: 500 })
     const d_leverage = useDebounce({ value: leverage, delay: 500 })
@@ -40,19 +41,18 @@ export function usePositionSize() {
                 return
             }
 
-            setIsLoading(true)
+            setIsCalculating(true)
 
             /* calculate the position size */
             const notional = big2Decimal(_collateral.mul(d_leverage))
-            const dir = side === Side.Long ? Dir.AddToAmm : Dir.RemoveFromAmm
             const positionReceived = await contract.getInputPrice(dir, notional)
             const formattedValue = formatInput(decimal2Big(positionReceived).toString(), 3)
 
             setPositionSize(formattedValue)
-            setIsLoading(false)
+            setIsCalculating(false)
         }
         updatePositionByUserControl()
-    }, [contract, side, d_collateral, d_leverage])
+    }, [contract, dir, d_collateral, d_leverage])
 
-    return { positionSize, isLoading }
+    return { positionSize, isCalculating, dir, d_collateral, d_leverage }
 }

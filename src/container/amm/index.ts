@@ -12,7 +12,7 @@ function useAmm() {
     const { insuranceFund, amm, addressMap } = Contract.useContainer()
     const { xDaiMulticallProvider } = Connection.useContainer()
     const [ammMap, setAmmMap] = useState<Record<string, AmmType> | null>(null)
-    const [selectedAmm, setSelectedAmm] = useState<string | null>(null)
+    const [selectedAmm, setSelectedAmm] = useState<AmmType | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {

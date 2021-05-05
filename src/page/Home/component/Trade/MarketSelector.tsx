@@ -17,7 +17,7 @@ function MarketSelector() {
     useEffect(() => {
         /* use local storage to impl setDefaultSelectedAmm would be better */
         function setDefaultSelectedAmm() {
-            setSelectedAmm(sortedAmmList[0].baseAssetSymbol)
+            setSelectedAmm(sortedAmmList[0])
         }
         if (sortedAmmList && sortedAmmList.length > 0) {
             setDefaultSelectedAmm()
@@ -27,8 +27,7 @@ function MarketSelector() {
     const handleOnChange = useCallback(
         e => {
             const index = e.target.value
-            const name = sortedAmmList[index].baseAssetSymbol
-            setSelectedAmm(name)
+            setSelectedAmm(sortedAmmList[index])
         },
         [sortedAmmList, setSelectedAmm],
     )

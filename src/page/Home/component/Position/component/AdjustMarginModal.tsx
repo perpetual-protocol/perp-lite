@@ -24,9 +24,9 @@ import {
     Td,
     ModalFooter,
     Text,
-    useDisclosure,
 } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
+import { PositionInfo } from "constant"
 import React, { useState } from "react"
 
 enum MarginDir {
@@ -34,8 +34,13 @@ enum MarginDir {
     Reduce,
 }
 
-function AdjustMarginModal() {
-    const { isOpen, onClose } = useDisclosure()
+interface AdjustMarginModalProps {
+    data: PositionInfo
+    isOpen: boolean
+    onClose: () => void
+}
+
+function AdjustMarginModal({ data, isOpen, onClose }: AdjustMarginModalProps) {
     const [marginDir, setMarginDir] = useState<MarginDir>(MarginDir.Add)
     return (
         <Modal isCentered motionPreset="slideInBottom" isOpen={isOpen} onClose={onClose}>

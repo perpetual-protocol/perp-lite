@@ -66,7 +66,7 @@ function Position() {
 
     return (
         <SimpleGrid columns={1} spacing={8}>
-            {positionInfo.map((info: PositionInfo) => (
+            {positionInfo.map((info: PositionInfo, index: number) => (
                 <PositionUnit key={info.baseAssetSymbol} data={info} />
             ))}
         </SimpleGrid>

@@ -16,14 +16,12 @@ import {
     ModalFooter,
     Button,
 } from "@chakra-ui/react"
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import { PositionInfo } from "constant/position"
 import { ClearingHouse } from "container/clearingHouse"
 import { Trade } from "page/Home/container/trade"
 import { useAmm } from "hook/useAmm"
-import { Dir } from "constant"
-import { big2Decimal, decimal2Big } from "util/format"
-import Big from "big.js"
+import { Transaction } from "container/transaction"
 
 interface ClosePositionModalProps {
     data: PositionInfo
@@ -34,18 +32,18 @@ interface ClosePositionModalProps {
 function ClosePositionModal({ data, isOpen, onClose }: ClosePositionModalProps) {
     const { slippage } = Trade.useContainer()
     const { closePosition } = ClearingHouse.useContainer()
-    const { address, size } = data
-    const { contract } = useAmm(address)
+    const { isLoading: isTxLoading } = Transaction.useContainer()
+    const { address, size, baseAssetSymbol } = data
+    const { getOutputPrice } = useAmm(address, baseAssetSymbol)
 
     const handleOnClick = useCallback(async () => {
-        if (contract) {
-            const dir: Dir = size.gt(0) ? Dir.AddToAmm : Dir.RemoveFromAmm
-            const notional: Big = decimal2Big(await contract.getOutputPrice(dir, big2Decimal(size.abs())))
+        const notional = await getOutputPrice(size)
+        if (notional !== null) {
             const slippageLimit = notional.mul(slippage / 100)
             const quoteLimit = size.gt(0) ? notional.sub(slippageLimit) : notional.add(slippageLimit)
             closePosition(address, quoteLimit)
         }
-    }, [address, closePosition, contract, size, slippage])
+    }, [address, closePosition, getOutputPrice, size, slippage])
 
     return (
         <Modal isCentered motionPreset="slideInBottom" isOpen={isOpen} onClose={onClose}>
@@ -94,7 +92,7 @@ function ClosePositionModal({ data, isOpen, onClose }: ClosePositionModalProps) 
                     </VStack>
                 </ModalBody>
                 <ModalFooter>
-                    <Button isFullWidth colorScheme="blue" size="md" onClick={handleOnClick}>
+                    <Button isFullWidth colorScheme="blue" size="md" onClick={handleOnClick} isLoading={isTxLoading}>
                         Close Position
                     </Button>
                 </ModalFooter>

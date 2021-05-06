@@ -9,6 +9,7 @@ import { Transaction, TransactionAction } from "../container/transaction"
 import { big2BigNum, bigNum2Big } from "../util/format"
 import { useContractCall } from "./useContractCall"
 import { CHAIN_ID } from "connector"
+import { isAddress } from "@ethersproject/address"
 
 export function useToken(address: string, decimals: number, chainId: CHAIN_ID) {
     const { xDaiMulticallProvider, ethMulticallProvider, account, signer } = Connection.useContainer()
@@ -22,7 +23,7 @@ export function useToken(address: string, decimals: number, chainId: CHAIN_ID) {
     const erc20 = chainId === CHAIN_ID.XDai ? erc20Contract?.XDai : erc20Contract?.Eth
 
     const contract = useMemo(() => {
-        return erc20?.attach(address) || null
+        return isAddress(address) ? erc20?.attach(address) || null : null
     }, [erc20, address])
 
     useEffect(() => {

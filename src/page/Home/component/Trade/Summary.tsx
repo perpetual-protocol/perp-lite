@@ -13,23 +13,26 @@ function SendTxButton() {
     const { slippage, side } = Trade.useContainer()
     const { openPosition } = ClearingHouse.useContainer()
     const { isLoading: isTxExecuting } = Transaction.useContainer()
-    const { positionSize, dir, d_collateral, d_leverage, isCalculating } = usePositionSize()
+    const { positionSize, dir, debouncedCollateral, debouncedLeverage, isCalculating } = usePositionSize()
     const ammAddress = selectedAmm?.address || ""
 
+    const isDisabled = isTxExecuting || isCalculating || debouncedCollateral === ""
+
     const handleOnTrade = useCallback(async () => {
-        const _collateral = new Big(d_collateral)
+        const _collateral = new Big(debouncedCollateral)
         const _positionSize = new Big(positionSize)
-        const _leverage = new Big(d_leverage)
+        const _leverage = new Big(debouncedLeverage)
         const _slippage = slippage / 100
         const minPositionSizeReceived: Big =
             side === Side.Long ? _positionSize.mul(1 - _slippage) : _positionSize.mul(1 + _slippage)
         openPosition(dir, ammAddress, _collateral, _leverage, minPositionSizeReceived)
-    }, [ammAddress, d_collateral, d_leverage, dir, openPosition, positionSize, side, slippage])
+    }, [ammAddress, debouncedCollateral, debouncedLeverage, dir, openPosition, positionSize, side, slippage])
 
     return (
         <Button
             size="md"
-            isLoading={isCalculating || isTxExecuting}
+            disabled={isDisabled}
+            isLoading={isTxExecuting}
             isFullWidth
             colorScheme="blue"
             onClick={handleOnTrade}

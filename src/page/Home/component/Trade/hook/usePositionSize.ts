@@ -18,8 +18,8 @@ export function usePositionSize() {
     const [positionSize, setPositionSize] = useState<string>("")
     const [isCalculating, setIsCalculating] = useState<boolean>(false)
 
-    const d_collateral = useDebounce({ value: collateral, delay: 500 })
-    const d_leverage = useDebounce({ value: leverage, delay: 500 })
+    const debouncedCollateral = useDebounce({ value: collateral, delay: 500 })
+    const debouncedLeverage = useDebounce({ value: leverage, delay: 500 })
 
     /**
      * 1. trigger by user
@@ -29,13 +29,13 @@ export function usePositionSize() {
     /* case1: trigger by user */
     useEffect(() => {
         async function updatePositionByUserControl() {
-            if (d_collateral === "" || !contract) {
+            if (debouncedCollateral === "" || !contract) {
                 setPositionSize("")
                 return
             }
 
             /* early return if the collateral is zero */
-            const _collateral = new Big(d_collateral)
+            const _collateral = new Big(debouncedCollateral)
             if (_collateral.eq(0)) {
                 setPositionSize("0")
                 return
@@ -44,7 +44,7 @@ export function usePositionSize() {
             setIsCalculating(true)
 
             /* calculate the position size */
-            const notional = big2Decimal(_collateral.mul(d_leverage))
+            const notional = big2Decimal(_collateral.mul(debouncedLeverage))
             const positionReceived = await contract.getInputPrice(dir, notional)
             const formattedValue = formatInput(decimal2Big(positionReceived).toString(), 3)
 
@@ -52,7 +52,7 @@ export function usePositionSize() {
             setIsCalculating(false)
         }
         updatePositionByUserControl()
-    }, [contract, dir, d_collateral, d_leverage])
+    }, [contract, dir, debouncedCollateral, debouncedLeverage])
 
-    return { positionSize, isCalculating, dir, d_collateral, d_leverage }
+    return { positionSize, isCalculating, dir, debouncedCollateral, debouncedLeverage }
 }

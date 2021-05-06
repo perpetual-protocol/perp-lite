@@ -4,14 +4,18 @@ import { Trade } from "page/Home/container/trade"
 import React, { useCallback, useMemo } from "react"
 import MyBalance from "./MyBalance"
 import { formatInput } from "util/format"
+import { USDC_PRECISION } from "constant"
+import { Amm } from "container/amm"
 
 function Collateral() {
+    const { selectedAmm } = Amm.useContainer()
     const { collateral, setCollateral } = Trade.useContainer()
+    const quoteAssetSymbol = selectedAmm?.quoteAssetSymbol || ""
 
     const handleOnInput = useCallback(
         e => {
             const value = e.target.value
-            const formattedValue = formatInput(value, 2)
+            const formattedValue = formatInput(value, USDC_PRECISION)
             setCollateral(formattedValue)
         },
         [setCollateral],
@@ -33,7 +37,7 @@ function Collateral() {
                                 color="blue.500"
                                 textTransform="uppercase"
                             >
-                                USDC
+                                {quoteAssetSymbol}
                             </Text>
                         </InputRightElement>
                     </InputGroup>
@@ -41,7 +45,7 @@ function Collateral() {
                 <MyBalance />
             </FormControl>
         ),
-        [collateral, handleOnInput],
+        [collateral, handleOnInput, quoteAssetSymbol],
     )
 }
 

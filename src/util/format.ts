@@ -1,7 +1,7 @@
 import Big from "big.js"
 import { BigNumber } from "ethers"
 import { formatUnits } from "ethers/lib/utils"
-import { ERC20_DECIMAL_DIGITS, QUOTE_ASSET_DIGITS, FIXED_PRECISION } from "../constant/number"
+import { ERC20_DECIMAL_DIGITS, USDC_PRECISION } from "../constant/number"
 
 export interface Decimal {
     d: BigNumber
@@ -11,7 +11,7 @@ export interface Decimal {
 export function bigNum2FixedStr(
     val: BigNumber,
     decimals: number = ERC20_DECIMAL_DIGITS,
-    digits: number = QUOTE_ASSET_DIGITS,
+    digits: number = USDC_PRECISION,
 ): string {
     return Number.parseFloat(formatUnits(val, decimals)).toFixed(digits)
 }
@@ -41,12 +41,12 @@ export function decimal2Big(decimal: Decimal): Big {
 const regexUSLocaleNumber = new RegExp(/\d(?=(\d{3})+\.)/g)
 
 // format number like 1000 => 1,000
-export function formatNumber(number: string = "") {
+export function numberWithCommas(number: string = "") {
     return number.replace(regexUSLocaleNumber, "$&,")
 }
 
-export function formatNumberWithPrecision(number: Big = new Big(0)) {
-    return formatNumber(number.toFixed(FIXED_PRECISION))
+export function numberWithCommasUsdc(number: Big = new Big(0)) {
+    return numberWithCommas(number.toFixed(USDC_PRECISION))
 }
 
 // ex: if the input is 1.005 and the digits is 2, the function will return 1.00

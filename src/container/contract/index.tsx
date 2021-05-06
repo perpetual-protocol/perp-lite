@@ -30,8 +30,17 @@ export const CONTRACT_ADDRESS = ((stage: Stage) =>
         [Stage.Development]: STAGING_CONTRACTS,
     }[stage]))(getStage())
 
+interface AddressMap {
+    ClearingHouseViewer: string
+    InsuranceFund: string
+    AmmReader: string
+    ClearingHouse: string
+    XDaiUsdc: string
+    MetaTxGateway: string
+}
+
 // NOTE: get contract address from metadata config endpoints
-function getAddressFromConfig(config: any) {
+function getAddressFromConfig(config: any): AddressMap {
     const {
         layers: {
             layer2: {

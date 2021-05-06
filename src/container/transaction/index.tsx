@@ -68,6 +68,7 @@ function useTransaction() {
     const provider = chainId === CHAIN_ID.XDai ? xDaiProvider : ethProvider
 
     const resetTxStatus = useCallback(() => {
+        console.log("debug:", "in reset")
         setIsLoading(false)
         setLatestTxData("")
     }, [setLatestTxData])

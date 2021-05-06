@@ -40,7 +40,7 @@ function ClosePositionModal({ data, isOpen, onClose }: ClosePositionModalProps) 
     const handleOnClick = useCallback(async () => {
         if (contract) {
             const dir: Dir = size.gt(0) ? Dir.AddToAmm : Dir.RemoveFromAmm
-            const notional: Big = decimal2Big(await contract.getOutputPrice(dir, big2Decimal(size)))
+            const notional: Big = decimal2Big(await contract.getOutputPrice(dir, big2Decimal(size.abs())))
             const slippageLimit = notional.mul(slippage / 100)
             const quoteLimit = size.gt(0) ? notional.sub(slippageLimit) : notional.add(slippageLimit)
             closePosition(address, quoteLimit)

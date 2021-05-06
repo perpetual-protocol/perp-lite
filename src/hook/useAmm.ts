@@ -6,7 +6,7 @@ export function useAmm(address: string) {
     const { amm } = Contract.useContainer()
 
     const contract = useMemo(() => {
-        return amm?.attach(address) || null
+        return address ? amm?.attach(address) || null : null
     }, [amm, address])
 
     const open = useContractCall(async () => {

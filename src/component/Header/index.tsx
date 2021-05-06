@@ -5,15 +5,13 @@ import ConnectBtn from "./ConnectBtn"
 
 function Header() {
     return (
-        <Container h="64px">
-            <Flex h="100%" alignItems="center">
-                <Link to="/">
-                    <Heading size="md">PERP Lite</Heading>
-                </Link>
-                <Spacer />
-                <ConnectBtn />
-            </Flex>
-        </Container>
+        <Flex h="64px" alignItems="center">
+            <Link to="/">
+                <Heading size="md">PERP Lite</Heading>
+            </Link>
+            <Spacer />
+            <ConnectBtn />
+        </Flex>
     )
 }
 

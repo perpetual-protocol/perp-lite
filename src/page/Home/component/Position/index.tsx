@@ -9,6 +9,7 @@ import { PnlCalcOption, PositionInfo } from "constant/position"
 import { decimal2Big } from "util/format"
 import PositionUnit from "./component/PositionUnit"
 import ClearingHouseViewerArtifact from "@perp/contract/build/contracts/src/ClearingHouseViewer.sol/ClearingHouseViewer.json"
+import { Box, Heading } from "@chakra-ui/react"
 
 function Position() {
     const { account, xDaiMulticallProvider } = Connection.useContainer()
@@ -98,6 +99,14 @@ function Position() {
 
     return (
         <SimpleGrid columns={1} spacing={8}>
+            {/* if no position */}
+
+            <Box>
+                <Heading color="gray.400">No open positions.</Heading>
+            </Box>
+
+            {/* if no position */}
+
             {positionInfo.map((info: PositionInfo, index: number) => (
                 <PositionUnit key={info.baseAssetSymbol} data={info} />
             ))}

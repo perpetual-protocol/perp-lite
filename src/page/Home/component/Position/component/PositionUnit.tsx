@@ -13,7 +13,7 @@ interface PositionUnitProps {
 function PositionUnit({ data }: PositionUnitProps) {
     const { baseAssetSymbol, size } = data
     const isLongSide = size.gte(0)
-    const positionSize = formatInput(size.toString(), 4)
+    const absSizeStr = formatInput(size.abs().toString(), 4)
     const {
         isOpen: isClosePositionModalOpen,
         onClose: onClosePositionModalClose,
@@ -34,7 +34,7 @@ function PositionUnit({ data }: PositionUnitProps) {
                     </HStack>
                     <SimpleGrid minChildWidth={["40%", "30%", "20%"]} spacing={4}>
                         {/* <DataUnit label="PnL" value="+129" /> */}
-                        <DataUnit label="Position Size" value={positionSize} />
+                        <DataUnit label="Position Size" value={absSizeStr} />
                         {/* <DataUnit label="Leverage" value="1.4×" /> */}
                         {/* <DataUnit label="Entry Price" value="1,398" /> */}
                         {/* <DataUnit label="Est.Liq.Price" value="943" /> */}
@@ -54,6 +54,7 @@ function PositionUnit({ data }: PositionUnitProps) {
             </Box>
         ),
         [
+            absSizeStr,
             baseAssetSymbol,
             data,
             isAdjustMarginModalOpen,
@@ -63,7 +64,6 @@ function PositionUnit({ data }: PositionUnitProps) {
             onAdjustMarginModalOpen,
             onClosePositionModalClose,
             onClosePositionModalOpen,
-            positionSize,
         ],
     )
 }

@@ -7,26 +7,28 @@ import { Transaction } from "container/transaction"
 import { Trade } from "page/Home/container/trade"
 import { Side } from "constant"
 import { usePositionSize } from "./hook/usePositionSize"
+import { isAddress } from "@ethersproject/address"
 
 function SendTxButton() {
     const { selectedAmm } = Amm.useContainer()
-    const { slippage, side } = Trade.useContainer()
+    const { slippage, side, collateral, leverage } = Trade.useContainer()
     const { openPosition } = ClearingHouse.useContainer()
     const { isLoading: isTxExecuting } = Transaction.useContainer()
-    const { positionSize, dir, debouncedCollateral, debouncedLeverage, isCalculating } = usePositionSize()
+    const { positionSize, dir, isCalculating } = usePositionSize()
     const ammAddress = selectedAmm?.address || ""
 
-    const isDisabled = isTxExecuting || isCalculating || debouncedCollateral === ""
+    const isDisabled = isTxExecuting || isCalculating || collateral === null || collateral.eq(0)
 
     const handleOnTrade = useCallback(async () => {
-        const _collateral = new Big(debouncedCollateral)
-        const _positionSize = new Big(positionSize)
-        const _leverage = new Big(debouncedLeverage)
-        const _slippage = slippage / 100
-        const minPositionSizeReceived: Big =
-            side === Side.Long ? _positionSize.mul(1 - _slippage) : _positionSize.mul(1 + _slippage)
-        openPosition(dir, ammAddress, _collateral, _leverage, minPositionSizeReceived)
-    }, [ammAddress, debouncedCollateral, debouncedLeverage, dir, openPosition, positionSize, side, slippage])
+        if (collateral && isAddress(ammAddress)) {
+            const _positionSize = new Big(positionSize)
+            const _leverage = new Big(leverage)
+            const _slippage = slippage / 100
+            const minPositionSizeReceived: Big =
+                side === Side.Long ? _positionSize.mul(1 - _slippage) : _positionSize.mul(1 + _slippage)
+            openPosition(dir, ammAddress, collateral, _leverage, minPositionSizeReceived)
+        }
+    }, [ammAddress, collateral, leverage, dir, openPosition, positionSize, side, slippage])
 
     return (
         <Button

@@ -3,9 +3,7 @@ import { Amm } from "container/amm"
 import { Trade } from "page/Home/container/trade"
 import { useAmm } from "hook/useAmm"
 import { useEffect, useState } from "react"
-import Big from "big.js"
 import { formatInput } from "util/format"
-import { useDebounce } from "hook/useDebounce"
 
 export function usePositionSize() {
     const { selectedAmm } = Amm.useContainer()
@@ -19,9 +17,6 @@ export function usePositionSize() {
     const [positionSize, setPositionSize] = useState<string>("")
     const [isCalculating, setIsCalculating] = useState<boolean>(false)
 
-    const debouncedCollateral = useDebounce({ value: collateral, delay: 500 })
-    const debouncedLeverage = useDebounce({ value: leverage, delay: 500 })
-
     /**
      * 1. trigger by user
      * 2. trigger by contract event
@@ -30,14 +25,13 @@ export function usePositionSize() {
     /* case1: trigger by user */
     useEffect(() => {
         async function updatePositionByUserControl() {
-            if (debouncedCollateral === "") {
+            if (collateral === null) {
                 setPositionSize("")
                 return
             }
 
             /* early return if the collateral is zero */
-            const _collateral = new Big(debouncedCollateral)
-            if (_collateral.eq(0)) {
+            if (collateral.eq(0)) {
                 setPositionSize("0")
                 return
             }
@@ -45,7 +39,7 @@ export function usePositionSize() {
             setIsCalculating(true)
 
             /* calculate the position size */
-            const notional = _collateral.mul(debouncedLeverage)
+            const notional = collateral.mul(leverage)
             const positionReceived = await getInputPrice(dir, notional)
 
             let formattedValue = ""
@@ -57,7 +51,7 @@ export function usePositionSize() {
             setIsCalculating(false)
         }
         updatePositionByUserControl()
-    }, [dir, debouncedCollateral, debouncedLeverage, getInputPrice])
+    }, [dir, getInputPrice, collateral, leverage])
 
-    return { positionSize, isCalculating, dir, debouncedCollateral, debouncedLeverage }
+    return { positionSize, isCalculating, dir }
 }

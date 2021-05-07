@@ -1,5 +1,4 @@
 import { Box, Button, FormHelperText, HStack } from "@chakra-ui/react"
-import { isAddress } from "@ethersproject/address"
 import Big from "big.js"
 import { CHAIN_ID } from "connector"
 import { USDC_DECIMAL_DIGITS } from "constant"
@@ -8,23 +7,24 @@ import { Contract } from "container/contract"
 import { useToken } from "hook/useToken"
 import { Trade } from "page/Home/container/trade"
 import React, { useCallback } from "react"
-import { formatInput, numberWithCommasUsdc } from "util/format"
+import { numberWithCommasUsdc } from "util/format"
 
 function MyBalance() {
     const { account } = Connection.useContainer()
-    const { collateral, setCollateral } = Trade.useContainer()
+    const { setCollateral } = Trade.useContainer()
     const { addressMap } = Contract.useContainer()
 
     /* prepare balance data  */
     const { balance } = useToken(addressMap ? addressMap.XDaiUsdc : "", USDC_DECIMAL_DIGITS, CHAIN_ID.XDai)
 
     const handleOnClick = useCallback(() => {
-        const _collateral = new Big(collateral)
-        if (balance && !_collateral.eq(balance)) {
-            const formattedValue = formatInput(balance.toString(), 2)
-            setCollateral(formattedValue)
+        /* make sure the precision will be controlled */
+        const fixedBalance = balance.toFixed(2)
+        const b_fixedBalance = new Big(fixedBalance)
+        if (!b_fixedBalance.eq(0)) {
+            setCollateral(b_fixedBalance)
         }
-    }, [balance, collateral, setCollateral])
+    }, [balance, setCollateral])
 
     return (
         <FormHelperText>

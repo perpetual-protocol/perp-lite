@@ -9,20 +9,29 @@ import {
     Text,
 } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Trade } from "page/Home/container/trade"
+import { useDebounce } from "hook/useDebounce"
 
 function Leverage() {
     const { side, leverage, setLeverage } = Trade.useContainer()
+    const [_leverage, _setLeverage] = useState<number>(1)
+    const debouncedLeverage = useDebounce({ value: _leverage, delay: 500 })
 
     const handleOnChange = useCallback(
         (value: number) => {
-            if (value !== leverage) {
-                setLeverage(value)
+            if (value !== _leverage) {
+                _setLeverage(value)
             }
         },
-        [leverage, setLeverage],
+        [_leverage],
     )
+
+    useEffect(() => {
+        if (debouncedLeverage !== leverage) {
+            setLeverage(debouncedLeverage)
+        }
+    }, [debouncedLeverage, leverage, setLeverage])
 
     return useMemo(
         () => (
@@ -31,7 +40,7 @@ function Leverage() {
                 <Box px={10} pt={4} pb={2} bg="blackAlpha.50" borderRadius="xl">
                     <Slider
                         onChange={handleOnChange}
-                        defaultValue={leverage}
+                        defaultValue={_leverage}
                         min={1}
                         max={10}
                         step={0.5}
@@ -53,7 +62,7 @@ function Leverage() {
                             bg={side === 1 ? "green.50" : "red.50"}
                         >
                             <Text fontSize="sm" fontWeight="bold" color={side === 1 ? "green.600" : "red.600"}>
-                                {leverage}×
+                                {_leverage}×
                             </Text>
                         </SliderThumb>
                     </Slider>
@@ -61,7 +70,7 @@ function Leverage() {
                 <FormHelperText>Up to 10×</FormHelperText>
             </FormControl>
         ),
-        [handleOnChange, leverage, side],
+        [handleOnChange, side, _leverage],
     )
 }
 

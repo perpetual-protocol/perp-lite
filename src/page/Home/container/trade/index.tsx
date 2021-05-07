@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { Side } from "constant"
+import Big from "big.js"
 
 export const Trade = createContainer(useTrade)
 
@@ -14,7 +15,7 @@ function useTrade() {
     /* min: 0.1%, max: 1% */
     const [slippage, setSlippage] = useState<number>(0.5)
 
-    const [collateral, setCollateral] = useState<string>("")
+    const [collateral, setCollateral] = useState<Big | null>(null)
 
     return useMemo(
         () => ({

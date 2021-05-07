@@ -59,7 +59,7 @@ function Collateral() {
                         </InputRightElement>
                     </InputGroup>
                 </NumberInput>
-                <MyBalance />
+                <MyBalance setCollateral={_setCollateral} />
             </FormControl>
         ),
         [_collateral, handleOnInput, quoteAssetSymbol],

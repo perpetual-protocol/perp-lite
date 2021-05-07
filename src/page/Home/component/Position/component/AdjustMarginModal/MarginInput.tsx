@@ -38,6 +38,12 @@ function MarginInput({ symbol }: MarginInputProps) {
         _setMargin(formattedValue)
     }, [])
 
+    const handleOnClick = useCallback(() => {
+        /* make sure the precision will be controlled */
+        const fixedBalance = balance.toFixed(2)
+        _setMargin(fixedBalance)
+    }, [balance])
+
     useEffect(() => {
         /* reset margin to null */
         if (debouncedMargin === "") {
@@ -75,14 +81,14 @@ function MarginInput({ symbol }: MarginInputProps) {
                 <FormHelperText>
                     <HStack w="100%" justifyContent="space-between" alignItems="flex-start">
                         <Box>My Balance : {numberWithCommasUsdc(balance)}</Box>
-                        <Button borderRadius="xl" size="xs" variant="outline">
+                        <Button borderRadius="xl" size="xs" variant="outline" onClick={handleOnClick}>
                             MAX
                         </Button>
                     </HStack>
                 </FormHelperText>
             </FormControl>
         ),
-        [_margin, balance, handleOnInput, symbol],
+        [_margin, balance, handleOnClick, handleOnInput, symbol],
     )
 }
 

@@ -1,6 +1,6 @@
 import { Side, Dir } from "constant"
 import { Amm } from "container/amm"
-import { Trade } from "page/Home/container/trade"
+import { Trade } from "container/trade"
 import { useAmm } from "hook/useAmm"
 import { useEffect, useState } from "react"
 import { formatInput } from "util/format"

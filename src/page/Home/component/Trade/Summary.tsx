@@ -4,7 +4,7 @@ import { Heading, VStack, Button, Box, Table, Tbody, Tr, Td, Text } from "@chakr
 import { Amm } from "container/amm"
 import { ClearingHouse } from "container/clearingHouse"
 import { Transaction } from "container/transaction"
-import { Trade } from "page/Home/container/trade"
+import { Trade } from "container/trade"
 import { Side } from "constant"
 import { usePositionSize } from "./hook/usePositionSize"
 import { isAddress } from "@ethersproject/address"

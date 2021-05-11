@@ -1,6 +1,6 @@
 import { FormControl, InputGroup, InputRightElement, NumberInput, NumberInputField, Text } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import { Trade } from "page/Home/container/trade"
+import { Trade } from "container/trade"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import MyBalance from "./MyBalance"
 import { formatInput } from "util/format"

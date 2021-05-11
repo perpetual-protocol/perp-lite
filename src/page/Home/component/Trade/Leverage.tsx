@@ -9,8 +9,8 @@ import {
     Text,
 } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { Trade } from "page/Home/container/trade"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { Trade } from "container/trade"
 import { useDebounce } from "hook/useDebounce"
 
 function Leverage() {

@@ -18,6 +18,8 @@ import { MetaData } from "./container/metadata"
 import { Connection } from "./container/connection"
 import { Amm } from "container/amm"
 import { ClearingHouse } from "container/clearingHouse"
+import { Position } from "container/position"
+import { Trade } from "container/trade"
 
 declare global {
     interface Window {
@@ -47,6 +49,8 @@ const Providers = ((...providers: any[]) => ({ children }: { children: React.Rea
     Contract.Provider,
     Amm.Provider,
     ClearingHouse.Provider,
+    Trade.Provider,
+    Position.Provider,
 )
 
 ReactDOM.render(

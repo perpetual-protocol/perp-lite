@@ -1,3 +1,4 @@
+import { isAddress } from "@ethersproject/address"
 import Big from "big.js"
 import { Dir } from "constant"
 import { Contract } from "container/contract"
@@ -9,7 +10,7 @@ export function useAmm(address: string, name: string) {
     const { amm } = Contract.useContainer()
 
     const contract = useMemo(() => {
-        return address ? amm?.attach(address) || null : null
+        return isAddress(address) ? amm?.attach(address) || null : null
     }, [amm, address])
 
     const getInputPrice = useCallback(

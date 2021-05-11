@@ -8,8 +8,8 @@ import {
     NumberInputStepper,
 } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
-import React, { useCallback, useMemo } from "react"
-import { Trade } from "page/Home/container/trade"
+import { useCallback, useMemo } from "react"
+import { Trade } from "container/trade"
 
 function Slippage() {
     const { slippage, setSlippage } = Trade.useContainer()

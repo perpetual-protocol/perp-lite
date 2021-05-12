@@ -9,26 +9,29 @@ import {
     ModalOverlay,
     VStack,
 } from "@chakra-ui/react"
-import { PositionInfo } from "constant"
 import AdjustButton from "./AdjustButton"
 import MarginDirSwitcher from "./MarginDirSwitcher"
 import MarginInput from "./MarginInput"
 import UpdatedInfo from "./UpdatedInfo"
 import { Margin } from "./container/margin"
 import { useMemo } from "react"
+import { Position } from "container/position"
 
-interface AdjustMarginModalProps {
-    data: PositionInfo
-    isOpen: boolean
-    onClose: () => void
-}
+function AdjustMarginModal() {
+    const {
+        state: { isAdjustMarginModalOpen },
+        closeAdjustMarginModal,
+    } = Position.useContainer()
 
-function AdjustMarginModal({ data, isOpen, onClose }: AdjustMarginModalProps) {
-    const { quoteAssetSymbol, address } = data
     return useMemo(
         () => (
             <Margin.Provider>
-                <Modal isCentered motionPreset="slideInBottom" isOpen={isOpen} onClose={onClose}>
+                <Modal
+                    isCentered
+                    motionPreset="slideInBottom"
+                    isOpen={isAdjustMarginModalOpen}
+                    onClose={closeAdjustMarginModal}
+                >
                     <ModalOverlay />
                     <ModalContent borderRadius="2xl" pb={3}>
                         <ModalHeader>Adjust Margin</ModalHeader>
@@ -36,20 +39,20 @@ function AdjustMarginModal({ data, isOpen, onClose }: AdjustMarginModalProps) {
                         <ModalBody>
                             <VStack spacing={5}>
                                 <MarginDirSwitcher />
-                                <MarginInput symbol={quoteAssetSymbol} />
+                                <MarginInput />
                                 <Divider />
                                 <UpdatedInfo />
                                 <Divider />
                             </VStack>
                         </ModalBody>
                         <ModalFooter>
-                            <AdjustButton address={address} />
+                            <AdjustButton />
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
             </Margin.Provider>
         ),
-        [address, isOpen, onClose, quoteAssetSymbol],
+        [closeAdjustMarginModal, isAdjustMarginModalOpen],
     )
 }
 

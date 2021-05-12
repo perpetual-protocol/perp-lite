@@ -2,16 +2,16 @@ import { Button } from "@chakra-ui/react"
 import { isAddress } from "@ethersproject/address"
 import { MarginDir } from "constant"
 import { ClearingHouse } from "container/clearingHouse"
+import { Position } from "container/position"
 import { Transaction } from "container/transaction"
 import { useCallback } from "react"
 import { big2BigNum } from "util/format"
 import { Margin } from "./container/margin"
 
-interface AdjustButtonProps {
-    address: string
-}
-
-function AdjustButton({ address }: AdjustButtonProps) {
+function AdjustButton() {
+    const {
+        state: { address },
+    } = Position.useContainer()
     const { addMargin, removeMargin } = ClearingHouse.useContainer()
     const { marginDir, margin } = Margin.useContainer()
     const { isLoading: isTxLoading } = Transaction.useContainer()

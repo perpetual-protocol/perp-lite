@@ -9,8 +9,6 @@ function useMargin() {
     const [marginDir, setMarginDir] = useState<MarginDir>(MarginDir.Add)
     const [margin, setMargin] = useState<Big | null>(null)
 
-    console.log("debug:", "in useMargin")
-
     return {
         marginDir,
         setMarginDir,

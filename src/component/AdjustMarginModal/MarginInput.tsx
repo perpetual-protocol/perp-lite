@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
     Button,
     FormControl,
@@ -15,19 +15,19 @@ import SmallFormLabel from "component/SmallFormLabel"
 import { Contract } from "container/contract"
 import { useToken } from "hook/useToken"
 import { CHAIN_ID } from "connector"
-import { USDC_DECIMAL_DIGITS, USDC_PRECISION } from "constant"
+import { MarginDir, USDC_DECIMAL_DIGITS, USDC_PRECISION } from "constant"
 import { formatInput, numberWithCommasUsdc } from "util/format"
 import { useDebounce } from "hook/useDebounce"
 import { Margin } from "./container/margin"
 import Big from "big.js"
+import { Position } from "container/position"
 
-interface MarginInputProps {
-    symbol: string
-}
-
-function MarginInput({ symbol }: MarginInputProps) {
+function MarginInput() {
+    const {
+        state: { quoteAssetSymbol },
+    } = Position.useContainer()
     const { addressMap } = Contract.useContainer()
-    const { margin, setMargin } = Margin.useContainer()
+    const { margin, setMargin, marginDir } = Margin.useContainer()
     const { balance } = useToken(addressMap ? addressMap.XDaiUsdc : "", USDC_DECIMAL_DIGITS, CHAIN_ID.XDai)
     const [_margin, _setMargin] = useState<string>("")
     const debouncedMargin = useDebounce({ value: _margin, delay: 500 })
@@ -73,22 +73,25 @@ function MarginInput({ symbol }: MarginInputProps) {
                                 color="blue.500"
                                 textTransform="uppercase"
                             >
-                                {symbol}
+                                {quoteAssetSymbol}
                             </Text>
                         </InputRightElement>
                     </InputGroup>
                 </NumberInput>
-                <FormHelperText>
-                    <HStack w="100%" justifyContent="space-between" alignItems="flex-start">
-                        <Box>My Balance : {numberWithCommasUsdc(balance)}</Box>
-                        <Button borderRadius="xl" size="xs" variant="outline" onClick={handleOnClick}>
-                            MAX
-                        </Button>
-                    </HStack>
-                </FormHelperText>
+                {marginDir === MarginDir.Add && (
+                    <FormHelperText>
+                        <HStack w="100%" justifyContent="space-between" alignItems="flex-start">
+                            <Box>My Balance : {numberWithCommasUsdc(balance)}</Box>
+
+                            <Button borderRadius="xl" size="xs" variant="outline" onClick={handleOnClick}>
+                                MAX
+                            </Button>
+                        </HStack>
+                    </FormHelperText>
+                )}
             </FormControl>
         ),
-        [_margin, balance, handleOnClick, handleOnInput, symbol],
+        [_margin, balance, handleOnClick, handleOnInput, marginDir, quoteAssetSymbol],
     )
 }
 

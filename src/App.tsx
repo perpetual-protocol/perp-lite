@@ -5,6 +5,7 @@ import Home from "./page/Home"
 import "focus-visible/dist/focus-visible"
 import { Container, Divider } from "@chakra-ui/react"
 import ClosePositionModal from "component/ClosePositionModal"
+import AdjustMarginModal from "component/AdjustMarginModal"
 
 export const App = () => (
     <Container maxW="container.md" pb={20} px={6}>
@@ -17,5 +18,6 @@ export const App = () => (
         </Switch>
         <WalletListModal />
         <ClosePositionModal />
+        <AdjustMarginModal />
     </Container>
 )

@@ -2,7 +2,6 @@ import { Badge, Box, Button, Heading, HStack, SimpleGrid, Spacer, Stack, useDisc
 import { useCallback, useMemo } from "react"
 import DataUnit from "./DataUnit"
 import { PositionInfo } from "constant/position"
-import AdjustMarginModal from "./AdjustMarginModal"
 import Big from "big.js"
 import { numberWithCommasUsdc } from "util/format"
 import { Position } from "container/position"
@@ -12,18 +11,17 @@ interface PositionUnitProps {
 }
 
 function PositionUnit({ data }: PositionUnitProps) {
-    const { openClosePositionModal } = Position.useContainer()
+    const { openClosePositionModal, openAdjustMarginModal } = Position.useContainer()
     const { address, baseAssetSymbol, quoteAssetSymbol, unrealizedPnl, size, margin, marginRatio, openNotional } = data
     const isLongSide = size.gte(0)
-    const {
-        isOpen: isAdjustMarginModalOpen,
-        onClose: onAdjustMarginModalClose,
-        onOpen: onAdjustMarginModalOpen,
-    } = useDisclosure()
 
     const handleOnClosePositionClick = useCallback(() => {
         openClosePositionModal(address, baseAssetSymbol, quoteAssetSymbol)
     }, [address, baseAssetSymbol, quoteAssetSymbol, openClosePositionModal])
+
+    const handleOnAdjustMarginClick = useCallback(() => {
+        openAdjustMarginModal(address, baseAssetSymbol, quoteAssetSymbol)
+    }, [address, baseAssetSymbol, quoteAssetSymbol, openAdjustMarginModal])
 
     /* prepare data for UI */
     const pnlStr = useMemo(() => unrealizedPnl.toFixed(2), [unrealizedPnl])
@@ -55,25 +53,21 @@ function PositionUnit({ data }: PositionUnitProps) {
                             Close Position
                         </Button>
                         <Spacer />
-                        <Button onClick={onAdjustMarginModalOpen}>Margin Management</Button>
+                        <Button onClick={handleOnAdjustMarginClick}>Margin Management</Button>
                     </Box>
                 </Stack>
-                <AdjustMarginModal data={data} isOpen={isAdjustMarginModalOpen} onClose={onAdjustMarginModalClose} />
             </Box>
         ),
         [
             absSizeStr,
             baseAssetSymbol,
-            data,
             entryPriceStr,
+            handleOnAdjustMarginClick,
             handleOnClosePositionClick,
-            isAdjustMarginModalOpen,
             isLongSide,
             leverageStr,
             marginRatioStr,
             marginStr,
-            onAdjustMarginModalClose,
-            onAdjustMarginModalOpen,
             pnlStr,
         ],
     )

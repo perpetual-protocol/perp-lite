@@ -1,13 +1,19 @@
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { Contract as MulticallContract } from "ethers-multicall"
 import { isAddress } from "@ethersproject/address"
 import Big from "big.js"
 import { Dir } from "constant"
+import { Connection } from "container/connection"
 import { Contract } from "container/contract"
-import { useCallback, useMemo } from "react"
 import { AmmError } from "util/error"
-import { decimal2Big, big2Decimal } from "util/format"
+import { decimal2Big, big2Decimal, bigNum2Big } from "util/format"
+import { useContractEvent } from "./useContractEvent"
 
 export function useAmm(address: string, name: string) {
+    const { xDaiMulticallProvider } = Connection.useContainer()
     const { amm } = Contract.useContainer()
+    const [baseAssetReserve, setBaseAssetReserve] = useState<Big | null>(null)
+    const [quoteAssetReserve, setQuoteAssetReserve] = useState<Big | null>(null)
 
     const contract = useMemo(() => {
         return isAddress(address) ? amm?.attach(address) || null : null
@@ -42,8 +48,31 @@ export function useAmm(address: string, name: string) {
         [address, contract, name],
     )
 
+    useEffect(() => {
+        async function getAssetReserve() {
+            if (xDaiMulticallProvider !== null && amm !== null && isAddress(address)) {
+                const multiContract = new MulticallContract(address, amm.interface.fragments)
+                const [quoteAssetReserve, baseAssetReserve] = await xDaiMulticallProvider.all([
+                    multiContract.quoteAssetReserve(),
+                    multiContract.baseAssetReserve(),
+                ])
+                setQuoteAssetReserve(bigNum2Big(quoteAssetReserve))
+                setBaseAssetReserve(bigNum2Big(baseAssetReserve))
+            }
+        }
+        getAssetReserve()
+    }, [address, amm, xDaiMulticallProvider])
+
+    /* will receive [quoteAssetReserve, baseAssetReserve, timestamp] */
+    useContractEvent(contract, "ReserveSnapshotted", (quoteAssetReserve, baseAssetReserve, _) => {
+        setQuoteAssetReserve(bigNum2Big(quoteAssetReserve))
+        setBaseAssetReserve(bigNum2Big(baseAssetReserve))
+    })
+
     return {
         contract,
+        baseAssetReserve,
+        quoteAssetReserve,
         getInputPrice,
         getOutputPrice,
     }

@@ -1,7 +1,6 @@
 import { FormControl, InputGroup, Input, InputRightElement, Text } from "@chakra-ui/react"
 import SmallFormLabel from "component/SmallFormLabel"
 import { Amm } from "container/amm"
-import React from "react"
 import { usePositionSize } from "./hook/usePositionSize"
 
 function Position() {

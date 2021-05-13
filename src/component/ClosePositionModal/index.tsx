@@ -88,12 +88,12 @@ function ClosePositionModal() {
             ])
             const [notional, tollRatio, spreadRatio] = rawAmmData
             const b_tollRatio = bigNum2Big(tollRatio)
-            const s_tollRatio = bigNum2Big(spreadRatio)
+            const b_spreadRatio = bigNum2Big(spreadRatio)
             const b_notional = decimal2Big(notional)
 
             /* calculate the toll fee for staker and the spread fee for insurance fund */
             const tollFee = b_notional.mul(b_tollRatio)
-            const spreadFee = b_notional.mul(s_tollRatio)
+            const spreadFee = b_notional.mul(b_spreadRatio)
             const fee = tollFee.add(spreadFee)
 
             const _closePositionInfo = {

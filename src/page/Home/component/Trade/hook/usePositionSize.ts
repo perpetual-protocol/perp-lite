@@ -44,7 +44,7 @@ export function usePositionSize() {
 
             let formattedValue = ""
             if (positionReceived !== null) {
-                formattedValue = formatInput(positionReceived.toString(), 3)
+                formattedValue = formatInput(positionReceived.toString(), 7)
             }
 
             setPositionSize(formattedValue)

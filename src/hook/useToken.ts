@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Contract as MulticallContract } from "ethers-multicall"
 import { constants } from "ethers"
 import { Big } from "big.js"
@@ -10,6 +10,7 @@ import { big2BigNum, bigNum2Big } from "../util/format"
 import { useContractCall } from "./useContractCall"
 import { CHAIN_ID } from "connector"
 import { isAddress } from "@ethersproject/address"
+import { useContractEvent } from "./useContractEvent"
 
 export function useToken(address: string, decimals: number, chainId: CHAIN_ID) {
     const { xDaiMulticallProvider, ethMulticallProvider, account, signer } = Connection.useContainer()
@@ -124,30 +125,4 @@ export function useToken(address: string, decimals: number, chainId: CHAIN_ID) {
         approve,
         approveInfinity,
     }
-}
-
-type Callback = (...args: any[]) => void
-
-export function useContractEvent(contract: any, eventName: string, callback: Callback) {
-    const savedCallback = useRef<Callback | null>()
-
-    // Remember the latest callback.
-    useEffect(() => {
-        savedCallback.current = callback
-    })
-
-    useEffect(() => {
-        function listener(...args: any[]) {
-            if (savedCallback.current) {
-                savedCallback.current(...args)
-            }
-        }
-        if (contract && eventName) {
-            contract.on(eventName, listener)
-
-            return () => {
-                contract.off(eventName, listener)
-            }
-        }
-    }, [contract, eventName])
 }

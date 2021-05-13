@@ -32,7 +32,7 @@ function useConnection() {
         xDaiProvider: xDaiReadOnlyProvider,
         signer: library?.getSigner() || null,
         active,
-        account,
+        account: account || null,
         chainId,
     }
 }

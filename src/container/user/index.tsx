@@ -86,12 +86,12 @@ function useUser() {
         if (active && account && chainId) {
             dispatch({ type: ACTIONS.LOGIN_SUCCESS, payload: { address: account } })
             identify(account)
-            const isWrongNetwork = chainId !== (IS_MAINNET ? CHAIN_ID.Ethereum : CHAIN_ID.Rinkeby)
+            const isWrongNetwork = chainId !== CHAIN_ID.XDai
             if (isWrongNetwork) {
                 // @ts-ignore
                 wrongNetworkRef.current = notifyError({
                     title: "Wrong network",
-                    description: `Please switch network to ${IS_MAINNET ? "ethereum mainnet" : "rinkeby"}.`,
+                    description: `Please switch network to xDai.`,
                     isClosable: true,
                     duration: null,
                 })

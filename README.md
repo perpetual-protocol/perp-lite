@@ -4,7 +4,7 @@
 
 -   set up `.env.local` file
 -   run `yarn`
--   run `yarn generate-types`
+-   run `yarn generate-type`
 -   run `yarn start`
 
 ### Environment Variables

@@ -12,7 +12,7 @@ function Position() {
         <FormControl id="position">
             <SmallFormLabel>Position</SmallFormLabel>
             <InputGroup>
-                <Input variant="filled" isReadOnly value={isCalculating ? "calculating..." : positionSize} />
+                <Input variant="filled" isReadOnly value={isCalculating ? "⃜⏳" : positionSize} />
                 <InputRightElement w="54px">
                     <Text
                         w="100%"

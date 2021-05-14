@@ -37,7 +37,7 @@ function Leverage() {
         () => (
             <FormControl id="leverages">
                 <SmallFormLabel>Leverages</SmallFormLabel>
-                <Box px={10} pt={4} pb={2} bg="blackAlpha.50" borderRadius="xl">
+                <Box px={10} pt={4} pb={8} bg="blackAlpha.50" borderRadius="xl">
                     <Slider
                         onChange={handleOnChange}
                         defaultValue={_leverage}
@@ -50,16 +50,24 @@ function Leverage() {
                             <SliderFilledTrack />
                         </SliderTrack>
                         <SliderThumb
+                            _focus={{ boxShadow: "2xl" }}
+                            _hover={{ boxShadow: "2xl" }}
+                            _highlighted={{ boxShadow: "2xl" }}
+                            _grabbed={{ boxShadow: "2xl" }}
+                            _pressed={{ boxShadow: "2xl" }}
                             _active={{
                                 userSelect: "none",
                                 pb: ["50px", 0],
                                 pt: ["6px", 0],
-                                height: ["88px", "32px"],
-                                transform: ["translateY(-70px)", "translateY(-50%)"],
+                                height: ["88px", "36px"],
+                                transform: ["translate(-50%,-70px)", "translate(-50%,-50%)"],
+                                boxShadow: "md",
                             }}
-                            h={8}
+                            transform={["translate(-50%,-50%)", "translate(-50%,-50%)"]}
+                            h={9}
                             w={12}
                             bg={side === 1 ? "green.50" : "red.50"}
+                            boxShadow="2xl"
                         >
                             <Text fontSize="sm" fontWeight="bold" color={side === 1 ? "green.600" : "red.600"}>
                                 {_leverage}×

@@ -1,9 +1,10 @@
-import { Side, Dir } from "constant"
+import { Dir, Side } from "constant"
+import { useEffect, useState } from "react"
+
 import { Amm } from "container/amm"
 import { Trade } from "container/trade"
-import { useAmm } from "hook/useAmm"
-import { useEffect, useState } from "react"
 import { formatInput } from "util/format"
+import { useRealtimeAmm } from "hook/useRealtimeAmm"
 
 export function usePositionSize() {
     const { selectedAmm } = Amm.useContainer()
@@ -12,7 +13,7 @@ export function usePositionSize() {
 
     const ammAddress = selectedAmm?.address || ""
     const ammName = selectedAmm?.baseAssetSymbol || ""
-    const { getInputPrice } = useAmm(ammAddress, ammName)
+    const { getInputPrice } = useRealtimeAmm(ammAddress, ammName)
 
     const [positionSize, setPositionSize] = useState<string>("")
     const [isCalculating, setIsCalculating] = useState<boolean>(false)

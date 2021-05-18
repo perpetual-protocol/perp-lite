@@ -1,6 +1,7 @@
 {
     "name": "dapp-boilerplate",
     "version": "0.1.0",
+    "license": "BSD-3-Clause",
     "private": true,
     "scripts": {
         "start": "react-scripts start",

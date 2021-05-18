@@ -1,16 +1,17 @@
+import { ContractCall, Contract as MulticallContract } from "ethers-multicall"
+import { PnlCalcOption, PositionInfo } from "constant/position"
 import { useCallback, useEffect, useState } from "react"
-import { Contract as MulticallContract, ContractCall } from "ethers-multicall"
-import { SimpleGrid } from "@chakra-ui/layout"
-import { useInterval } from "@chakra-ui/hooks"
+
 import { Amm } from "container/amm"
+import ClearingHouseViewerArtifact from "@perp/contract/build/contracts/src/ClearingHouseViewer.sol/ClearingHouseViewer.json"
 import { Connection } from "container/connection"
 import { Contract } from "container/contract"
-import { PnlCalcOption, PositionInfo } from "constant/position"
+import NoPosition from "./NoPosition"
+import NoWallet from "./NoWallet"
+import PositionUnit from "./PositionUnit"
+import { SimpleGrid } from "@chakra-ui/layout"
 import { decimal2Big } from "util/format"
-import PositionUnit from "./component/PositionUnit"
-import ClearingHouseViewerArtifact from "@perp/contract/build/contracts/src/ClearingHouseViewer.sol/ClearingHouseViewer.json"
-import NoWallet from "./component/NoWallet"
-import NoPosition from "./component/NoPosition"
+import { useInterval } from "@chakra-ui/hooks"
 
 function Position() {
     const { account, xDaiMulticallProvider } = Connection.useContainer()

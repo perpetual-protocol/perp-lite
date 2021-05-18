@@ -1,13 +1,15 @@
-import React, { ReactNode } from "react"
+import { Link, LinkProps } from "@chakra-ui/react"
 
-interface Props {
+import { ReactNode } from "react"
+
+interface Props extends LinkProps {
     href: string
     children: ReactNode
 }
-export function ExternalLink({ href, children }: Props) {
+export function ExternalLink({ href, children, ...props }: Props) {
     return (
-        <a href={href} target="_blank" rel="noreferrer noopener">
+        <Link href={href} target="_blank" rel="noreferrer noopener" {...props}>
             {children}
-        </a>
+        </Link>
     )
 }

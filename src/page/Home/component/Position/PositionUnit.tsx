@@ -1,10 +1,11 @@
-import { Badge, Box, Button, Heading, HStack, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react"
+import { Badge, Box, Button, HStack, Heading, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react"
 import { useCallback, useMemo } from "react"
-import DataUnit from "./DataUnit"
-import { PositionInfo } from "constant/position"
+
 import Big from "big.js"
-import { numberWithCommasUsdc } from "util/format"
+import DataUnit from "./DataUnit"
 import { Position } from "container/position"
+import { PositionInfo } from "constant/position"
+import { numberWithCommasUsdc } from "util/format"
 
 interface PositionUnitProps {
     data: PositionInfo

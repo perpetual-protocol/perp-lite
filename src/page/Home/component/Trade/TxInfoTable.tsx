@@ -1,13 +1,14 @@
-import { Table, Tbody, Tr, Td } from "@chakra-ui/react"
+import { Table, Tbody, Td, Tr } from "@chakra-ui/react"
+
+import { Amm } from "container/amm"
 import Big from "big.js"
 import { Side } from "constant"
-import { Amm } from "container/amm"
 import { Trade } from "container/trade"
+import { numberWithCommasUsdc } from "util/format"
 import { useAmm } from "hook/useAmm"
 import { useMemo } from "react"
-import { numberWithCommasUsdc } from "util/format"
-import { useOpenedPositionSize } from "./hook/useOpenedPositionSize"
-import { usePositionSize } from "./hook/usePositionSize"
+import { useOpenedPositionSize } from "./useOpenedPositionSize"
+import { usePositionSize } from "./usePositionSize"
 
 function TxInfoTable() {
     const { selectedAmm } = Amm.useContainer()

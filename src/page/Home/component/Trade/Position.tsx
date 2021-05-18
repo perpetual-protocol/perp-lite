@@ -1,7 +1,8 @@
-import { FormControl, InputGroup, Input, InputRightElement, Text } from "@chakra-ui/react"
-import SmallFormLabel from "component/SmallFormLabel"
+import { FormControl, Input, InputGroup, InputRightElement, Text } from "@chakra-ui/react"
+
 import { Amm } from "container/amm"
-import { usePositionSize } from "./hook/usePositionSize"
+import SmallFormLabel from "component/SmallFormLabel"
+import { usePositionSize } from "./usePositionSize"
 
 function Position() {
     const { selectedAmm } = Amm.useContainer()

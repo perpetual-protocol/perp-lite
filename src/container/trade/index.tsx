@@ -12,7 +12,7 @@ function useTrade() {
     /* min: 1, max: 10 */
     const [leverage, setLeverage] = useState<number>(1)
 
-    /* min: 0.1%, max: 1% */
+    /* min: 0% */
     const [slippage, setSlippage] = useState<number>(0.5)
 
     const [collateral, setCollateral] = useState<Big | null>(null)

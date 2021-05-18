@@ -16,7 +16,7 @@ function Slippage() {
 
     const handleOnChange = useCallback(
         value => {
-            if (value >= 0.1 && value <= 1) {
+            if (value >= 0) {
                 setSlippage(value)
             }
         },
@@ -30,8 +30,8 @@ function Slippage() {
                 <NumberInput
                     allowMouseWheel
                     value={slippage}
-                    min={0.1}
-                    max={1}
+                    pattern="^\d*\.?\d+$"
+                    min={0}
                     step={0.1}
                     clampValueOnBlur={false}
                     onChange={handleOnChange}

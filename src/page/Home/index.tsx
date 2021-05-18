@@ -1,4 +1,4 @@
-import { Spacer, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
 import { useState } from "react"
 import GetStarted from "./component/GetStarted"
 import Position from "./component/Position"

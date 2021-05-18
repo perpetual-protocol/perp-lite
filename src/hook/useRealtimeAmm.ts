@@ -1,15 +1,16 @@
+import { big2Decimal, bigNum2Big, decimal2Big } from "util/format"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Contract as MulticallContract } from "ethers-multicall"
-import { isAddress } from "@ethersproject/address"
+
+import { AmmError } from "util/error"
 import Big from "big.js"
-import { Dir } from "constant"
 import { Connection } from "container/connection"
 import { Contract } from "container/contract"
-import { AmmError } from "util/error"
-import { decimal2Big, big2Decimal, bigNum2Big } from "util/format"
+import { Dir } from "constant"
+import { Contract as MulticallContract } from "ethers-multicall"
+import { isAddress } from "@ethersproject/address"
 import { useContractEvent } from "./useContractEvent"
 
-export function useAmm(address: string, name: string) {
+export function useRealtimeAmm(address: string, name: string) {
     const { xDaiMulticallProvider } = Connection.useContainer()
     const { amm } = Contract.useContainer()
     const [baseAssetReserve, setBaseAssetReserve] = useState<Big | null>(null)

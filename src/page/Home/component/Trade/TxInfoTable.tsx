@@ -5,10 +5,10 @@ import Big from "big.js"
 import { Side } from "constant"
 import { Trade } from "container/trade"
 import { numberWithCommasUsdc } from "util/format"
-import { useAmm } from "hook/useAmm"
 import { useMemo } from "react"
 import { useOpenedPositionSize } from "./useOpenedPositionSize"
 import { usePositionSize } from "./usePositionSize"
+import { useRealtimeAmm } from "hook/useRealtimeAmm"
 
 function TxInfoTable() {
     const { selectedAmm } = Amm.useContainer()
@@ -17,7 +17,7 @@ function TxInfoTable() {
 
     const ammAddress = selectedAmm?.address || ""
     const ammName = selectedAmm?.baseAssetSymbol || ""
-    const { quoteAssetReserve, baseAssetReserve } = useAmm(ammAddress, ammName)
+    const { quoteAssetReserve, baseAssetReserve } = useRealtimeAmm(ammAddress, ammName)
     const { size: openedSize, margin: openedMargin, unrealizedPnl, outputPrice } = useOpenedPositionSize(ammAddress)
 
     /* prepare data for UI */

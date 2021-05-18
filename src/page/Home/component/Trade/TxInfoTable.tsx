@@ -1,20 +1,23 @@
 import { Table, Tbody, Tr, Td } from "@chakra-ui/react"
 import Big from "big.js"
+import { Side } from "constant"
 import { Amm } from "container/amm"
 import { Trade } from "container/trade"
 import { useAmm } from "hook/useAmm"
 import { useMemo } from "react"
 import { numberWithCommasUsdc } from "util/format"
+import { useOpenedPositionSize } from "./hook/useOpenedPositionSize"
 import { usePositionSize } from "./hook/usePositionSize"
 
 function TxInfoTable() {
     const { selectedAmm } = Amm.useContainer()
-    const { collateral, leverage } = Trade.useContainer()
+    const { collateral, leverage, side } = Trade.useContainer()
     const { positionSize, isCalculating } = usePositionSize()
 
     const ammAddress = selectedAmm?.address || ""
     const ammName = selectedAmm?.baseAssetSymbol || ""
     const { quoteAssetReserve, baseAssetReserve } = useAmm(ammAddress, ammName)
+    const { size: openedSize, margin: openedMargin, unrealizedPnl, outputPrice } = useOpenedPositionSize(ammAddress)
 
     /* prepare data for UI */
     const entryPrice: Big | null = useMemo(() => {
@@ -27,6 +30,17 @@ function TxInfoTable() {
         }
         return null
     }, [collateral, isCalculating, leverage, positionSize])
+
+    const fee: Big | null = useMemo(() => {
+        if (collateral !== null && selectedAmm !== null) {
+            const { tollRatio, spreadRatio } = selectedAmm
+            const notional = collateral.mul(leverage)
+            const tollFee = notional.mul(tollRatio)
+            const spreadFee = notional.mul(spreadRatio)
+            return tollFee.add(spreadFee)
+        }
+        return null
+    }, [collateral, leverage, selectedAmm])
 
     const entryPriceStr = useMemo(() => {
         if (entryPrice !== null) {
@@ -47,17 +61,54 @@ function TxInfoTable() {
     }, [entryPrice, quoteAssetReserve, baseAssetReserve])
 
     const feeStr = useMemo(() => {
-        if (collateral !== null && selectedAmm !== null) {
-            const { tollRatio, spreadRatio } = selectedAmm
-            const notional = collateral.mul(leverage)
-            const tollFee = notional.mul(tollRatio)
-            const spreadFee = notional.mul(spreadRatio)
-            return numberWithCommasUsdc(tollFee.add(spreadFee))
+        if (fee !== null) {
+            return numberWithCommasUsdc(fee)
         }
         return "-"
-    }, [collateral, leverage, selectedAmm])
+    }, [fee])
 
-    const totalStr = useMemo(() => {}, [])
+    const totalStr = useMemo(() => {
+        /* TODO: positionSize should only be null or Big */
+        if (collateral !== null && fee !== null && positionSize !== "") {
+            if (
+                openedMargin !== null &&
+                openedSize !== null &&
+                outputPrice !== null &&
+                unrealizedPnl !== null &&
+                !openedSize.eq(0) &&
+                side !== (openedSize.gt(0) ? Side.Long : Side.Short)
+            ) {
+                const b_positionSize = new Big(positionSize)
+                if (b_positionSize.gt(openedSize.abs())) {
+                    /** case:
+                     * open an "opposite side" position
+                     * and the "open size" is "bigger" than the "existing position" size */
+                    /**
+                     * collateralToPay
+                     * = collateral - remainMargin
+                     * = (positionNotionalDiff / leverage) - remainMargin
+                     * = (newPositionNotional - oldPositionNotional) / leverage - remainMargin
+                     * = collateral - (oldPositionNotional / leverage) - remainMargin
+                     */
+                    const remainMargin = openedMargin.add(unrealizedPnl)
+                    const collateralToPay = collateral.sub(outputPrice.div(leverage)).sub(remainMargin)
+                    return numberWithCommasUsdc(fee.add(collateralToPay))
+                } else {
+                    /** case:
+                     * open an "opposite side" position
+                     * and the "open size" is "small or equal" to the "existing position" size */
+                    return numberWithCommasUsdc(fee)
+                }
+            } else {
+                /** case:
+                 * no existing position
+                 * or open a "same side" position
+                 */
+                return numberWithCommasUsdc(fee.add(collateral))
+            }
+        }
+        return "-"
+    }, [collateral, fee, leverage, openedMargin, openedSize, outputPrice, positionSize, side, unrealizedPnl])
 
     return (
         <Table size="sm" borderRadius="12px" overflow="hidden" w="100%" variant="simple">
@@ -80,7 +131,7 @@ function TxInfoTable() {
                 </Tr>
                 <Tr fontWeight="bold">
                     <Td>Total Cost</Td>
-                    <Td isNumeric>0.91444</Td>
+                    <Td isNumeric>{totalStr}</Td>
                 </Tr>
             </Tbody>
         </Table>

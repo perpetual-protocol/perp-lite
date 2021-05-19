@@ -1,5 +1,6 @@
 import { BigNumber, ContractTransaction, Signer } from "ethers"
-import { Dir, Decimal } from "constant"
+import { Decimal, Dir } from "constant"
+
 import { ClearingHouse } from "types/contracts"
 import { ClearingHouseActions } from "./type"
 
@@ -38,34 +39,12 @@ export class ContractExecutor implements ClearingHouseActions {
 
     async execute(funcName: string, args: any[]) {
         const overrides = { from: this.contract.signer.getAddress() }
-        // const gasLimitRatio = BigNumber.from(2)
-        // let gasLimit: BigNumber
 
-        // @ts-ignore
-        // const functionSignature = this.contract.interface.encodeFunctionData(funcName, args)
-
-        // try {
-        //     // @ts-ignore
-        //     gasLimit = await this.contract.estimateGas[funcName](...args, overrides)
-        // } catch (e) {
-        //     const metadataSet: LogMetadataSet = {
-        //         payload: {
-        //             functionSignature,
-        //             to: this.contract.address,
-        //             from: overrides.from,
-        //         },
-        //     }
-        //     console.log(e)
-        //     logger.error(e, metadataSet)
-        //     throw e
-        // }
-
-        // @TODO: hard code the gasLimit, until estimateGas function can always return a reasonable number
-        // return this.contract[funcName](...args, { ...overrides, gasLimit: gasLimitRatio.mul(gasLimit) })
         return this.contract[funcName](...args, {
             ...overrides,
+            // NOTE: hard code the gasLimit, until estimateGas function can always return a reasonable number.
             gasLimit: BigNumber.from(3_800_000),
-            // Instead of using a lower customized gas price, we use the default gas price which is provided by the metamask.
+            // NOTE: Instead of using a lower customized gas price, we use the default gas price which is provided by the metamask.
             // gasPrice: utils.parseUnits("2", "gwei"),
         })
     }

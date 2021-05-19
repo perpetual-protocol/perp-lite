@@ -1,4 +1,4 @@
-import { Badge, Box, Button, HStack, Heading, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react"
+import { Badge, Box, Button, HStack, Heading, SimpleGrid, Spacer, Stack } from "@chakra-ui/react"
 import { useCallback, useMemo } from "react"
 
 import Big from "big.js"

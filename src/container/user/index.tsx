@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react"
-import { AbstractConnector } from "@web3-react/abstract-connector"
-import { createContainer } from "unstated-next"
-import { useWeb3React } from "@web3-react/core"
-import { useLocalStorage } from "../../hook/useLocalStorage"
-import { STORAGE_KEY, IS_MAINNET } from "../../constant"
 import { identify, reset } from "../../lib/segment/base"
+import { useCallback, useEffect, useReducer, useRef, useState } from "react"
+
+import { AbstractConnector } from "@web3-react/abstract-connector"
 import { CHAIN_ID } from "../../connector"
+import { STORAGE_KEY } from "../../constant"
+import { SUPPORTED_WALLETS } from "constant/wallet"
+import { createContainer } from "unstated-next"
+import { useLocalStorage } from "../../hook/useLocalStorage"
 import { useNotification } from "../../hook/useNotification"
 import { usePrevious } from "../../hook/usePrevious"
-import { SUPPORTED_WALLETS } from "constant/wallet"
+import { useWeb3React } from "@web3-react/core"
 
 enum ACTIONS {
     LOGIN_REQUEST = "LOGIN_REQUEST",

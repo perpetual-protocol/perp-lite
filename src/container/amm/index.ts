@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { createContainer } from "unstated-next"
+
+import AmmReaderArtifact from "@perp/contract/build/contracts/src/AmmReader.sol/AmmReader.json"
 import { Amm as AmmType } from "constant/amm"
+import { Connection } from "container/connection"
 import { Contract } from "container/contract"
 import { Contract as MulticallContract } from "ethers-multicall"
-import AmmReaderArtifact from "@perp/contract/build/contracts/src/AmmReader.sol/AmmReader.json"
-import { Connection } from "container/connection"
-import Big from "big.js"
 import { bigNum2Big } from "util/format"
+import { createContainer } from "unstated-next"
 import { isAddress } from "@ethersproject/address"
 
 export const Amm = createContainer(useAmm)

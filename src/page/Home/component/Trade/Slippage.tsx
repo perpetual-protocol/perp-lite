@@ -43,8 +43,8 @@ function Slippage() {
                     </NumberInputStepper>
                 </NumberInput>
                 <FormHelperText>
-                    Min: 0.1, max: 1. To use custom slippage please input manually. It also apply to closing position
-                    and margin adjustment.
+                    To use custom slippage please input manually. It also apply to closing position and margin
+                    adjustment.
                 </FormHelperText>
             </FormControl>
         ),

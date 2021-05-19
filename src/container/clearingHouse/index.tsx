@@ -7,7 +7,7 @@ import { BigNumber } from "ethers"
 import { ClearingHouseActions } from "./type"
 import { Connection } from "../connection"
 import { Contract } from "../contract"
-import { ContractExecutor } from "./ContractExectuor"
+import { ContractExecutor } from "./ContractExecutor"
 import { Transaction } from "../transaction"
 import { createContainer } from "unstated-next"
 

@@ -7,8 +7,9 @@ import {
     NumberInputField,
     NumberInputStepper,
 } from "@chakra-ui/react"
-import SmallFormLabel from "component/SmallFormLabel"
 import { useCallback, useMemo } from "react"
+
+import SmallFormLabel from "component/SmallFormLabel"
 import { Trade } from "container/trade"
 
 function Slippage() {
@@ -30,7 +31,6 @@ function Slippage() {
                 <NumberInput
                     allowMouseWheel
                     value={slippage}
-                    pattern="^\d*\.?\d+$"
                     min={0}
                     step={0.1}
                     clampValueOnBlur={false}

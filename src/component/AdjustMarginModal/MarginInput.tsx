@@ -1,26 +1,27 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
 import {
+    Box,
     Button,
     FormControl,
-    NumberInput,
-    InputGroup,
-    NumberInputField,
-    InputRightElement,
     FormHelperText,
     HStack,
+    InputGroup,
+    InputRightElement,
+    NumberInput,
+    NumberInputField,
     Text,
-    Box,
 } from "@chakra-ui/react"
-import SmallFormLabel from "component/SmallFormLabel"
-import { Contract } from "container/contract"
-import { useToken } from "hook/useToken"
-import { CHAIN_ID } from "connector"
 import { MarginDir, USDC_DECIMAL_DIGITS, USDC_PRECISION } from "constant"
 import { formatInput, numberWithCommasUsdc } from "util/format"
-import { useDebounce } from "hook/useDebounce"
-import { Margin } from "./container/margin"
+import { useCallback, useEffect, useMemo, useState } from "react"
+
 import Big from "big.js"
+import { CHAIN_ID } from "connector"
+import { Contract } from "container/contract"
+import { Margin } from "./container/margin"
 import { Position } from "container/position"
+import SmallFormLabel from "component/SmallFormLabel"
+import { useDebounce } from "hook/useDebounce"
+import { useToken } from "hook/useToken"
 
 function MarginInput() {
     const {
@@ -34,8 +35,10 @@ function MarginInput() {
 
     const handleOnInput = useCallback(e => {
         const value = e.target.value
-        const formattedValue = formatInput(value, USDC_PRECISION)
-        _setMargin(formattedValue)
+        if (value >= 0) {
+            const formattedValue = formatInput(value, USDC_PRECISION)
+            _setMargin(formattedValue)
+        }
     }, [])
 
     const handleOnClick = useCallback(() => {

@@ -7,24 +7,29 @@ on:
 jobs:
     deploy:
         runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [12.x]
         steps:
             - uses: actions/checkout@v2
-            
+
             - name: Set variables
               id: set-variables
               run: |
                 if [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+-prod$ ]] \
-                && [[ ${{ github.event.release.target_commitish }} = master ]]
+                && [[ ${{ github.event.release.target_commitish }} = =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
                 then
                     echo "::set-output name=release_env::production"
                     echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME_PROD }}"
+                    echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION_PROD }}"
                     echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID_PROD }}"
                     echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}"
                 elif [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
-                && [[ ${{ github.event.release.target_commitish }} = develop ]]
+                && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
                 then
                     echo "::set-output name=release_env::staging"
                     echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME }}"
+                    echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION }}"
                     echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID }}"
                     echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY }}"
                 else
@@ -33,26 +38,30 @@ jobs:
                 fi
                 echo "::set-output name=npm_cache_dir::$(npm config get cache)"
 
-            - uses: actions/cache@v2
-              with:
-                  path: |
-                      ${{ steps.set-variables.outputs.npm_cache_dir }}
-                      **/node_modules
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-
-
             - name: Use Node.js 12.x
               uses: actions/setup-node@v1
               with:
-                  node-version: 12.x
+                node-version: ${{ matrix.node-version }}
+
+            # See: https://github.com/actions/cache/blob/main/examples.md#node---yarn
+            - name: Get Yarn cache directory
+              id: yarn-cache-dir-path
+              run: echo "::set-output name=dir::$(yarn cache dir)"
+
+            - name: Use Yarn cache
+              uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
             - name: Install package dependencies
-              run: npm ci
+              run: yarn install --prefer-offline --frozen-lockfile
 
             - name: Build static website
-              run: npm run build
+              run: yarn build
               env:
+                CI: ''
                 REACT_APP_STAGE: ${{ steps.set-variables.outputs.release_env }}
                 REACT_APP_GITHUB_TAG: ${{ github.event.release.tag_name }}
 
@@ -64,7 +73,7 @@ jobs:
                   AWS_S3_BUCKET: ${{ steps.set-variables.outputs.aws_s3_bucket }}
                   AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
                   AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
-                  AWS_REGION: "ap-southeast-1"
+                  AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
                   SOURCE_DIR: "build"
 
             - name: Update metadata of index.html on S3
@@ -74,7 +83,7 @@ jobs:
               env:
                 AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
                 AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
-                AWS_REGION: 'ap-southeast-1'
+                AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
                 SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
                 DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
 
@@ -85,7 +94,7 @@ jobs:
               env:
                 AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
                 AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
-                AWS_REGION: 'ap-southeast-1'
+                AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
                 SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
                 DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
 

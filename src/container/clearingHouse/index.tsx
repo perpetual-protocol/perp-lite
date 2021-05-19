@@ -1,29 +1,24 @@
-import { createContainer } from "unstated-next"
-import { Big } from "big.js"
-import { Contract } from "../contract"
-import { Connection } from "../connection"
 import { Dir, Network } from "../../constant"
-import { ClearingHouseActions } from "./type"
-import { MetaTxExecutor } from "./MetaTxExecutor"
-import { ContractExecutor } from "./ContractExectuor"
+import { big2Decimal, bigNum2Decimal } from "util/format"
 import { useCallback, useMemo } from "react"
-import { CHAIN_ID } from "../../connector"
-import { exec } from "child_process"
-import { Transaction } from "../transaction"
-import { big2Decimal, decimal2Big } from "../../util/format"
+
+import { Big } from "big.js"
 import { BigNumber } from "ethers"
+import { ClearingHouseActions } from "./type"
+import { Connection } from "../connection"
+import { Contract } from "../contract"
+import { ContractExecutor } from "./ContractExectuor"
+import { Transaction } from "../transaction"
+import { createContainer } from "unstated-next"
 
 export const ClearingHouse = createContainer(useClearingHouse)
 
 export interface Executors {
-    [Network.Ethereum]: ClearingHouseActions
     [Network.Xdai]: ClearingHouseActions
 }
 
-const { REACT_APP_BICONOMY_API_KEY, REACT_APP_BICONOMY_GATEWAY_API_ID, REACT_APP_BICONOMY_TOKEN_API_ID } = process.env
-
 function useClearingHouse() {
-    const { ethProvider, xDaiProvider, chainId, account, signer } = Connection.useContainer()
+    const { signer } = Connection.useContainer()
     const { clearingHouse, metaTxGateway } = Contract.useContainer()
     const { execute } = Transaction.useContainer()
 
@@ -32,24 +27,10 @@ function useClearingHouse() {
             return null
         }
         return {
-            [Network.Ethereum]: new MetaTxExecutor(
-                REACT_APP_BICONOMY_API_KEY!,
-                REACT_APP_BICONOMY_GATEWAY_API_ID!,
-                REACT_APP_BICONOMY_TOKEN_API_ID!,
-                ethProvider,
-                xDaiProvider,
-                clearingHouse,
-                true,
-                metaTxGateway,
-                account,
-            ),
             [Network.Xdai]: new ContractExecutor(clearingHouse, signer),
         }
-    }, [clearingHouse, metaTxGateway])
+    }, [clearingHouse, metaTxGateway, signer])
 
-    // NOTE:
-    // If we support `?network=100` in this app, we can use this information to determine
-    // which executor we will use. Currently, we use xdai executor as default.
     const currentExecutor = useMemo(() => {
         return executors ? executors[Network.Xdai] : null
     }, [executors])
@@ -83,8 +64,8 @@ function useClearingHouse() {
     const addMargin = useCallback(
         (ammAddress: string, increaseMargin: BigNumber) => {
             if (currentExecutor) {
-                // TODO: refactor this { d: } type
-                execute(currentExecutor.addMargin(ammAddress, { d: increaseMargin }))
+                const d_increaseMargin = bigNum2Decimal(increaseMargin)
+                execute(currentExecutor.addMargin(ammAddress, d_increaseMargin))
             }
         },
         [currentExecutor, execute],
@@ -93,18 +74,12 @@ function useClearingHouse() {
     const removeMargin = useCallback(
         (ammAddress: string, reduceMargin: BigNumber) => {
             if (currentExecutor) {
-                // TODO: refactor this { d: } type
-                execute(currentExecutor.removeMargin(ammAddress, { d: reduceMargin }))
+                const d_reduceMargin = bigNum2Decimal(reduceMargin)
+                execute(currentExecutor.removeMargin(ammAddress, d_reduceMargin))
             }
         },
         [currentExecutor, execute],
     )
-
-    // TODO:
-    // read
-    // getMarginRatio(ammAddress, account)
-    // maintenanceMarginRatio() // fixed
-    // getOpenInterestNotionalMap(ammAddress) // for all amms
 
     return {
         openPosition,

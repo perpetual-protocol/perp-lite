@@ -1,5 +1,6 @@
+import { Stage, getStage } from "../constant"
+
 import Bugsnag from "@bugsnag/js"
-import { getStage, Stage } from "../constant"
 import BugsnagPluginReact from "@bugsnag/plugin-react"
 
 export function setupBugsnag() {
@@ -12,7 +13,9 @@ export function setupBugsnag() {
     })
 }
 
+/* NOTE: LogMetadataSet: { [tabName: string]: { [propName: string]: any }} */
 export type LogMetadataSet = Record<string, Record<string, any>>
+
 export class Logger {
     private static instance: Logger | null = null
     private constructor() {}
@@ -44,7 +47,7 @@ export class Logger {
         }
         console.warn(...args)
     }
-    error(err: any, metadataSet?: LogMetadataSet) {
+    error(err: Error, metadataSet?: LogMetadataSet) {
         if (getStage() !== Stage.Development) {
             if (!err.name) {
                 err.name = "Error"

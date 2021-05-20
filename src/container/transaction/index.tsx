@@ -12,7 +12,7 @@ import { TransactionReceipt } from "@ethersproject/providers"
 import { User } from "../user"
 import { createContainer } from "unstated-next"
 import { getEtherscanTxLink } from "util/link"
-import { logger } from "lib/errorReport"
+import { logger } from "lib/bugsnag/logger"
 import { useLocalStorage } from "hook/useLocalStorage"
 import { useNotification } from "../../hook/useNotification"
 

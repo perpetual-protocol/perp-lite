@@ -1,22 +1,11 @@
-import { Stage, getStage } from "../constant"
+import { Stage, getStage } from "../../constant"
 
 import Bugsnag from "@bugsnag/js"
-import BugsnagPluginReact from "@bugsnag/plugin-react"
-
-export function setupBugsnag() {
-    Bugsnag.start({
-        apiKey: process.env.REACT_APP_BUGSNAG_API_KEY || "apiKey",
-        appType: "perp-lite",
-        appVersion: process.env.REACT_APP_GITHUB_TAG,
-        releaseStage: process.env.REACT_APP_STAGE,
-        plugins: [new BugsnagPluginReact()],
-    })
-}
 
 /* NOTE: LogMetadataSet: { [tabName: string]: { [propName: string]: any }} */
 export type LogMetadataSet = Record<string, Record<string, any>>
 
-export class Logger {
+class Logger {
     private static instance: Logger | null = null
     private constructor() {}
     static init() {

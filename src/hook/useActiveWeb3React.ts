@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import { injected } from "../connector"
-import { logger } from "lib/errorReport"
+import { logger } from "lib/bugsnag/logger"
 import { useWeb3React as useWeb3ReactCore } from "@web3-react/core"
 
 export function useEagerConnect() {

@@ -1,18 +1,20 @@
-import React, { useEffect } from "react"
-import { createContainer } from "unstated-next"
-import { TransactionReceipt } from "@ethersproject/providers"
-import { useState, useCallback } from "react"
-import { useNotification } from "../../hook/useNotification"
-import { getEtherscanTxLink } from "util/link"
-import { ExternalLink } from "component/ExternalLink"
-import { ContractTransaction } from "@ethersproject/contracts"
-import { User } from "../user"
-import { BigNumber } from "ethers"
-import { useLocalStorage } from "hook/useLocalStorage"
-import { STORAGE_KEY } from "constant/storage"
-import { Connection } from "container/connection"
-import { CHAIN_ID } from "connector"
 import { BiconomyError, TxRejectError } from "../../util/error"
+import React, { useEffect } from "react"
+import { useCallback, useState } from "react"
+
+import { BigNumber } from "ethers"
+import { CHAIN_ID } from "connector"
+import { Connection } from "container/connection"
+import { ContractTransaction } from "@ethersproject/contracts"
+import { ExternalLink } from "component/ExternalLink"
+import { STORAGE_KEY } from "constant/storage"
+import { TransactionReceipt } from "@ethersproject/providers"
+import { User } from "../user"
+import { createContainer } from "unstated-next"
+import { getEtherscanTxLink } from "util/link"
+import { logger } from "lib/bugsnag/logger"
+import { useLocalStorage } from "hook/useLocalStorage"
+import { useNotification } from "../../hook/useNotification"
 
 export const Transaction = createContainer(useTransaction)
 
@@ -68,7 +70,6 @@ function useTransaction() {
     const provider = chainId === CHAIN_ID.XDai ? xDaiProvider : ethProvider
 
     const resetTxStatus = useCallback(() => {
-        console.log("debug:", "in reset")
         setIsLoading(false)
         setLatestTxData("")
     }, [setLatestTxData])
@@ -87,7 +88,7 @@ function useTransaction() {
                         description: successDesc,
                     })
                 } else if (triedTimes < MAX_RETRY_TIMES) {
-                    console.log("triedTimes", triedTimes)
+                    logger.info("triedTimes", triedTimes)
                     setTimeout(() => {
                         checkReceipt(triedTimes + 1)
                     }, 2000)
@@ -100,7 +101,7 @@ function useTransaction() {
                 }
             } catch (err) {
                 resetTxStatus()
-                console.log("debug:", "err", err)
+                logger.error(err)
             }
         }
         if (!isInitialized) {
@@ -183,7 +184,7 @@ function useTransaction() {
                     })
                     setError(err)
                 }
-                console.log(err)
+                logger.error(err)
                 resetTxStatus()
             }
             return {
@@ -217,9 +218,9 @@ function useTransaction() {
                     title: <ExternalLink href={getEtherscanTxLink(txHash)}>{successTitle}</ExternalLink>,
                     description: successDesc,
                 })
-            } catch (e) {
-                console.log(e)
-                setError(e)
+            } catch (err) {
+                logger.error(err)
+                setError(err)
                 notifyError({
                     title: <ExternalLink href={getEtherscanTxLink(txHash)}>{errorTitle}</ExternalLink>,
                     description: errorDesc,
@@ -244,9 +245,9 @@ function useTransaction() {
                     contract[funcName](...args, { ...overrides, gasLimit: gasLimitRatio.mul(gasLimit) }),
                     option,
                 )
-            } catch (e) {
-                setError(e)
-                console.log(e)
+            } catch (err) {
+                logger.error(err)
+                setError(err)
             }
             return receipt
         },

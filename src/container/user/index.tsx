@@ -6,6 +6,7 @@ import { CHAIN_ID } from "../../connector"
 import { STORAGE_KEY } from "../../constant"
 import { SUPPORTED_WALLETS } from "constant/wallet"
 import { createContainer } from "unstated-next"
+import { logger } from "lib/bugsnag/logger"
 import { useLocalStorage } from "../../hook/useLocalStorage"
 import { useNotification } from "../../hook/useNotification"
 import { usePrevious } from "../../hook/usePrevious"
@@ -68,12 +69,12 @@ function useUser() {
                     if (onActivate) {
                         onActivate()
                     }
-                    console.log("connect success")
+                    logger.info("connect success")
                 })
-                .catch(e => {
+                .catch(err => {
                     setConnectorId("")
                     dispatch({ type: ACTIONS.LOGIN_FAIL })
-                    console.error("connect failed", e)
+                    logger.error(err)
                 })
         },
         [dispatch, setConnectorId, activate],
@@ -110,7 +111,7 @@ function useUser() {
     useEffect(() => {
         const connector = SUPPORTED_WALLETS.find(walletInfo => walletInfo.id === connectorId)?.connector
         if (!isTried && connector) {
-            console.log("auto login...")
+            logger.info("auto login...")
             login(connector, connectorId)
             setIsTried(true)
         }

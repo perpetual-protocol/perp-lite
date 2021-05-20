@@ -1,6 +1,8 @@
 import * as React from "react"
 import * as serviceWorker from "./serviceWorker"
 
+import { createErrorBoundary, setupBugsnag } from "./lib/bugsnag"
+
 import { Amm } from "container/amm"
 import { App } from "./App"
 import { BrowserRouter } from "react-router-dom"
@@ -18,7 +20,6 @@ import { Transaction } from "./container/transaction"
 import { User } from "./container/user"
 import { Web3Provider } from "./container/web3"
 import reportWebVitals from "./reportWebVitals"
-import { setupBugsnag } from "./lib/errorReport"
 import { setupSegment } from "./lib/segment"
 import theme from "./theme"
 
@@ -31,6 +32,7 @@ declare global {
 // NOTE: third party services
 setupSegment()
 setupBugsnag()
+const ErrorBoundary = createErrorBoundary()
 
 const Providers = ((...providers: any[]) => ({ children }: { children: React.ReactNode }) => {
     return providers.reduceRight((providers, provider) => {
@@ -56,10 +58,12 @@ const Providers = ((...providers: any[]) => ({ children }: { children: React.Rea
 
 ReactDOM.render(
     <React.StrictMode>
-        <Providers>
-            <Fonts />
-            <App />
-        </Providers>
+        <ErrorBoundary>
+            <Providers>
+                <Fonts />
+                <App />
+            </Providers>
+        </ErrorBoundary>
     </React.StrictMode>,
     document.getElementById("root"),
 )

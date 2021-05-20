@@ -1,4 +1,9 @@
+
+
 ## Perp Lite
+
+<img width="256px" style="margin: 0 auto; float: right" src="https://github.com/perpetual-protocol/perp-lite/raw/main/public/lite-banner.png" />
+
 
 This is a lite version of Perpetual Protocol UI with essential features. Note that you need to manually switch to xDai network to trade.
 

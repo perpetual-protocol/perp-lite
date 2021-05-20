@@ -23,32 +23,27 @@ class Logger {
         }
     }
     info(...args: any[]) {
-        // info will keep messages on all env
+        // NOTE: info will keep messages on all env
         console.info(...args)
     }
     warn(...args: any[]) {
-        if (getStage() !== Stage.Development) {
-            const msg = args.join(" ")
-            Bugsnag.notify({
-                name: "Warn",
-                message: msg,
-            })
-        }
+        const msg = args.join(" ")
+        // NOTE: only send in enabled env configured in Bugsnag.start's `enabledReleaseStages` prop.
+        Bugsnag.notify({
+            name: "Warn",
+            message: msg,
+        })
         console.warn(...args)
     }
     error(err: Error, metadataSet?: LogMetadataSet) {
-        if (getStage() !== Stage.Development) {
-            if (!err.name) {
-                err.name = "Error"
+        // NOTE: only send in enabled env configured in Bugsnag.start's `enabledReleaseStages` prop.
+        Bugsnag.notify(err, event => {
+            if (metadataSet) {
+                Object.entries(metadataSet).forEach(([section, metadata]) => {
+                    event.addMetadata(section, metadata)
+                })
             }
-            Bugsnag.notify(err, event => {
-                if (metadataSet) {
-                    Object.entries(metadataSet).forEach(([section, metadata]) => {
-                        event.addMetadata(section, metadata)
-                    })
-                }
-            })
-        }
+        })
         console.error(err)
     }
 }

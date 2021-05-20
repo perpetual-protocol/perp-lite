@@ -22,6 +22,7 @@ jobs:
                     echo "::set-output name=release_env::production"
                     echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL_PROD }}"
                     echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY_PROD }}"
+                    echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY_PROD }}"
                     echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME_PROD }}"
                     echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION_PROD }}"
                     echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID_PROD }}"
@@ -32,6 +33,7 @@ jobs:
                     echo "::set-output name=release_env::staging"
                     echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL }}"
                     echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY }}"
+                    echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY }}"
                     echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME }}"
                     echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION }}"
                     echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID }}"
@@ -70,6 +72,7 @@ jobs:
                 REACT_APP_GITHUB_TAG: ${{ github.event.release.tag_name }}
                 REACT_APP_XDAI_RPC_URL: ${{ steps.set-variables.outputs.xdai_rpc_url }}
                 REACT_APP_INFURA_API_KEY: ${{ steps.set-variables.outputs.infura_api_key }}
+                REACT_APP_SEGMENT_API_KEY: ${{ steps.set-variables.outputs.segment_api_key }}
 
             - name: Upload website to S3
               uses: jakejarvis/s3-sync-action@master

@@ -8,46 +8,48 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         strategy:
-          matrix:
-            node-version: [12.x]
+            matrix:
+                node-version: [12.x]
         steps:
             - uses: actions/checkout@v2
 
             - name: Set variables
               id: set-variables
               run: |
-                if [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+-prod$ ]] \
-                && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
-                then
-                    echo "::set-output name=release_env::production"
-                    echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL_PROD }}"
-                    echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY_PROD }}"
-                    echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY_PROD }}"
-                    echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME_PROD }}"
-                    echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION_PROD }}"
-                    echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID_PROD }}"
-                    echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}"
-                elif [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
-                && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
-                then
-                    echo "::set-output name=release_env::staging"
-                    echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL }}"
-                    echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY }}"
-                    echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY }}"
-                    echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME }}"
-                    echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION }}"
-                    echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID }}"
-                    echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-                else
-                    echo "Your tag and branch are not matched."
-                    exit 1
-                fi
-                echo "::set-output name=npm_cache_dir::$(npm config get cache)"
+                  if [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+-prod$ ]] \
+                  && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
+                  then
+                      echo "::set-output name=release_env::production"
+                      echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL_PROD }}"
+                      echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY_PROD }}"
+                      echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY_PROD }}"
+                      echo "::set-output name=bugsnag_api_key::${{ secrets.BUGSNAG_API_KEY_PROD }}"
+                      echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME_PROD }}"
+                      echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION_PROD }}"
+                      echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID_PROD }}"
+                      echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}"
+                  elif [[ ${{ github.event.release.tag_name }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+                  && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
+                  then
+                      echo "::set-output name=release_env::staging"
+                      echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL }}"
+                      echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY }}"
+                      echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY }}"
+                      echo "::set-output name=bugsnag_api_key::${{ secrets.BUGSNAG_API_KEY }}"
+                      echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME }}"
+                      echo "::set-output name=aws_s3_bucket_region::${{ secrets.AWS_BUCKET_REGION }}"
+                      echo "::set-output name=aws_access_key_id::${{ secrets.AWS_ACCESS_KEY_ID }}"
+                      echo "::set-output name=aws_secret_access_key::${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+                  else
+                      echo "Your tag and branch are not matched."
+                      exit 1
+                  fi
+                  echo "::set-output name=npm_cache_dir::$(npm config get cache)"
 
             - name: Use Node.js 12.x
               uses: actions/setup-node@v1
               with:
-                node-version: ${{ matrix.node-version }}
+                  node-version: ${{ matrix.node-version }}
 
             # See: https://github.com/actions/cache/blob/main/examples.md#node---yarn
             - name: Get Yarn cache directory
@@ -58,8 +60,8 @@ jobs:
               uses: actions/cache@v2
               id: yarn-cache
               with:
-                path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-                key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
             - name: Install package dependencies
               run: yarn install --prefer-offline --frozen-lockfile
@@ -67,12 +69,13 @@ jobs:
             - name: Build static website
               run: yarn build
               env:
-                CI: ''
-                REACT_APP_STAGE: ${{ steps.set-variables.outputs.release_env }}
-                REACT_APP_GITHUB_TAG: ${{ github.event.release.tag_name }}
-                REACT_APP_XDAI_RPC_URL: ${{ steps.set-variables.outputs.xdai_rpc_url }}
-                REACT_APP_INFURA_API_KEY: ${{ steps.set-variables.outputs.infura_api_key }}
-                REACT_APP_SEGMENT_API_KEY: ${{ steps.set-variables.outputs.segment_api_key }}
+                  CI: ""
+                  REACT_APP_STAGE: ${{ steps.set-variables.outputs.release_env }}
+                  REACT_APP_GITHUB_TAG: ${{ github.event.release.tag_name }}
+                  REACT_APP_XDAI_RPC_URL: ${{ steps.set-variables.outputs.xdai_rpc_url }}
+                  REACT_APP_INFURA_API_KEY: ${{ steps.set-variables.outputs.infura_api_key }}
+                  REACT_APP_SEGMENT_API_KEY: ${{ steps.set-variables.outputs.segment_api_key }}
+                  REACT_APP_BUGSNAG_API_KEY: ${{ steps.set-variables.outputs.bugsnag_api_key }}
 
             - name: Upload website to S3
               uses: jakejarvis/s3-sync-action@master
@@ -88,24 +91,24 @@ jobs:
             - name: Update metadata of index.html on S3
               uses: prewk/s3-cp-action@v0.1.1
               with:
-                args: --metadata-directive REPLACE --cache-control no-cache --acl public-read
+                  args: --metadata-directive REPLACE --cache-control no-cache --acl public-read
               env:
-                AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
-                AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
-                AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
-                SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
-                DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
+                  AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
+                  AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
+                  AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
+                  SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
+                  DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/index.html"
 
             - name: Update metadata of static/ on S3
               uses: prewk/s3-cp-action@v0.1.1
               with:
-                args: --recursive --metadata-directive REPLACE --cache-control max-age=1209600,must-revalidate --acl public-read
+                  args: --recursive --metadata-directive REPLACE --cache-control max-age=1209600,must-revalidate --acl public-read
               env:
-                AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
-                AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
-                AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
-                SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
-                DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
+                  AWS_ACCESS_KEY_ID: ${{ steps.set-variables.outputs.aws_access_key_id }}
+                  AWS_SECRET_ACCESS_KEY: ${{ steps.set-variables.outputs.aws_secret_access_key }}
+                  AWS_REGION: ${{ steps.set-variables.outputs.aws_s3_bucket_region }}
+                  SOURCE: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
+                  DEST: "s3://${{ steps.set-variables.outputs.aws_s3_bucket }}/static/"
 
             - name: Discord notification
               env:
@@ -113,5 +116,5 @@ jobs:
               uses: Ilshidur/action-discord@master
               with:
                   args: "**[${{ steps.set-variables.outputs.release_env }}]** perp-lite deployed.
-                        Tag: **${{ github.event.release.tag_name }}** (${{ github.event.release.html_url }})
-                        ${{ github.event.release.body }}"
+                      Tag: **${{ github.event.release.tag_name }}** (${{ github.event.release.html_url }})
+                      ${{ github.event.release.body }}"

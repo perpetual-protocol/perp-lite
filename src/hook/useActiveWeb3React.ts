@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+
 import { injected } from "../connector"
+import { logger } from "lib/bugsnag/logger"
 import { useWeb3React as useWeb3ReactCore } from "@web3-react/core"
 
 export function useEagerConnect() {
@@ -29,8 +31,8 @@ export function useEagerConnect() {
 }
 
 /**
- * Use for network and injected - logs user in
- * and out after checking what network theyre on
+ * Used for network and injected -
+ * logs user in and out after checking what network they are on.
  */
 export function useInactiveListener(suppress = false) {
     const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
@@ -40,27 +42,16 @@ export function useInactiveListener(suppress = false) {
 
         if (ethereum && ethereum.on && !active && !error && !suppress) {
             const handleConnect = () => {
-                console.log("connect...")
-                // activate(injected, undefined, true).catch(error => {
-                //     console.error("Failed to connect metamask")
-                // })
+                logger.info("connect...")
             }
 
             const handleChainChanged = () => {
-                // eat errors
-                console.log("chain changed...")
-                // activate(injected, undefined, true).catch(error => {
-                //     console.error("Failed to activate after chain changed", error)
-                // })
+                logger.info("chain changed...")
             }
 
             const handleAccountsChanged = (accounts: string[]) => {
                 if (accounts.length > 0) {
-                    // eat errors
-                    console.log("account changed...")
-                    // activate(injected, undefined, true).catch(error => {
-                    //     console.error("Failed to activate after accounts changed", error)
-                    // })
+                    logger.info("account changed...")
                 }
             }
 

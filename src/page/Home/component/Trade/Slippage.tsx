@@ -6,8 +6,10 @@ import {
     NumberInput,
     NumberInputField,
     NumberInputStepper,
+    InputRightElement,
+    Text,
 } from "@chakra-ui/react"
-import { useCallback, useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 
 import SmallFormLabel from "component/SmallFormLabel"
 import { Trade } from "container/trade"
@@ -23,27 +25,40 @@ function Slippage() {
         },
         [setSlippage],
     )
-
     return useMemo(
         () => (
             <FormControl id="slippage">
                 <SmallFormLabel>Slippage (%)</SmallFormLabel>
                 <NumberInput
                     allowMouseWheel
-                    value={slippage}
                     min={0}
                     step={0.1}
+                    max={100}
                     clampValueOnBlur={false}
                     onChange={handleOnChange}
+                    value={slippage}
+                    focusInputOnChange={true}
                 >
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                     </NumberInputStepper>
+                    <InputRightElement w="54px" mr={4}>
+                        <Text
+                            w="100%"
+                            textAlign="center"
+                            fontWeight="bold"
+                            fontSize="xs"
+                            color="gray.500"
+                            textTransform="uppercase"
+                        >
+                            %
+                        </Text>
+                    </InputRightElement>
                 </NumberInput>
                 <FormHelperText>
-                    To use custom slippage please input manually. It also apply to closing position and margin
+                    To use custom slippage, please input manually. It also applies to closing position and margin
                     adjustment.
                 </FormHelperText>
             </FormControl>

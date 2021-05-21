@@ -36,7 +36,7 @@ function Leverage() {
     return useMemo(
         () => (
             <FormControl id="leverages">
-                <SmallFormLabel>Leverages</SmallFormLabel>
+                <SmallFormLabel>Leverage</SmallFormLabel>
                 <Box px={10} pt={4} pb={8} bg="blackAlpha.50" borderRadius="xl">
                     <Slider
                         onChange={handleOnChange}

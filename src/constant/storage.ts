@@ -20,4 +20,8 @@ export const STORAGE_KEY: StorageKey = {
         name: "latest-tx-data",
         defaultValue: "",
     },
+    IS_DEBUG_MODE: {
+        name: "is-debug-mode",
+        defaultValue: "false",
+    },
 }

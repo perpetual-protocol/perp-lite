@@ -84,43 +84,6 @@ const Home = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
-            <Modal
-                scrollBehavior="inside"
-                closeOnEsc={false}
-                closeOnOverlayClick={false}
-                isCentered
-                isOpen={isGeoBlocked}
-                onClose={() => {}}
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Your region is not supoorted</ModalHeader>
-                    {/* <ModalCloseButton /> */}
-                    <ModalBody>
-                        <Text>
-                            Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id
-                            consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco
-                            minim nostrud elit officia tempor esse quis. Sunt ad dolore quis aute consequat. Magna
-                            exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing.
-                            Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                            aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum
-                            eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                        </Text>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            colorScheme="blue"
-                            mr={3}
-                            onClick={() => {
-                                setIsGeoBlocked(false)
-                                setShowAgreement(true)
-                            }}
-                        >
-                            Demo: if not geoblocked
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
 
             {/* Tabs */}
             <Tabs size="md" mt={5} index={tabIndex} onChange={index => setTabIndex(index)} variant="enclosed">

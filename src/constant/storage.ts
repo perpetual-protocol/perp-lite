@@ -16,12 +16,16 @@ export const STORAGE_KEY: StorageKey = {
         name: "connector-id",
         defaultValue: "",
     },
-    LATEST_TX_DATA: {
-        name: "latest-tx-data",
-        defaultValue: "",
-    },
     IS_DEBUG_MODE: {
         name: "is-debug-mode",
         defaultValue: "false",
+    },
+    IS_TOS_AGREED: {
+        name: "is-tos-agreed",
+        defaultValue: "false",
+    },
+    LATEST_TX_DATA: {
+        name: "latest-tx-data",
+        defaultValue: "",
     },
 }

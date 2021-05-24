@@ -1,11 +1,23 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { Connection } from "container/connection"
 import GetStarted from "./component/GetStarted"
 import Position from "./component/Position"
 import TradeComponent from "./component/Trade"
 
 const Home = () => {
+    // NOTE: Focus the trade tab once wallet is connected.
     const [tabIndex, setTabIndex] = useState(0)
+    const { account } = Connection.useContainer()
+    useEffect(() => {
+        if (account) {
+            setTabIndex(1)
+        } else {
+            setTabIndex(0)
+        }
+    }, [account])
+
     return (
         <>
             {/* Tabs */}

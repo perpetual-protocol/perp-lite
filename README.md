@@ -1,9 +1,6 @@
-
-
 ## Perp Lite
 
 <img width="256px" style="margin: 0 auto; float: right" src="https://github.com/perpetual-protocol/perp-lite/raw/main/public/lite-banner.png" />
-
 
 This is a lite version of Perpetual Protocol UI with essential features. Note that you need to manually switch to xDai network to trade.
 
@@ -26,8 +23,9 @@ check `.env.local.example`.
 #### Required
 
 ```sh
-REACT_APP_INFURA_API_KEY= /* infura api key */
 REACT_APP_STAGE= /* "production" or "staging" */
+REACT_APP_MAINNET_RPC_URL= /* mainnet rpc url */
+REACT_APP_RINKEBY_RPC_URL= /* rinkeby rpc url */
 REACT_APP_XDAI_RPC_URL= /* xDai rpc url */
 ```
 

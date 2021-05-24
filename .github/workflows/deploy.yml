@@ -20,8 +20,9 @@ jobs:
                   && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
                   then
                       echo "::set-output name=release_env::production"
+                      echo "::set-output name=mainnet_rpc_url::${{ secrets.MAINNET_RPC_URL_PROD }}"
+                      echo "::set-output name=rinkeby_rpc_url::${{ secrets.RINKEBY_RPC_URL_PROD }}"
                       echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL_PROD }}"
-                      echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY_PROD }}"
                       echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY_PROD }}"
                       echo "::set-output name=bugsnag_api_key::${{ secrets.BUGSNAG_API_KEY_PROD }}"
                       echo "::set-output name=aws_s3_bucket::${{ secrets.AWS_BUCKET_NAME_PROD }}"
@@ -32,6 +33,8 @@ jobs:
                   && [[ ${{ github.event.release.target_commitish }} =~ ^release\/[0-9]+\.[0-9]+\.[0-9x]+$ ]]
                   then
                       echo "::set-output name=release_env::staging"
+                      echo "::set-output name=mainnet_rpc_url::${{ secrets.MAINNET_RPC_URL }}"
+                      echo "::set-output name=rinkeby_rpc_url::${{ secrets.RINKEBY_RPC_URL }}"
                       echo "::set-output name=xdai_rpc_url::${{ secrets.XDAI_RPC_URL }}"
                       echo "::set-output name=infura_api_key::${{ secrets.INFURA_API_KEY }}"
                       echo "::set-output name=segment_api_key::${{ secrets.SEGMENT_API_KEY }}"
@@ -72,8 +75,9 @@ jobs:
                   CI: ""
                   REACT_APP_STAGE: ${{ steps.set-variables.outputs.release_env }}
                   REACT_APP_GITHUB_TAG: ${{ github.event.release.tag_name }}
+                  REACT_APP_MAINNET_RPC_URL: ${{ steps.set-variables.outputs.mainnet_rpc_url }}
+                  REACT_APP_RINKEBY_RPC_URL: ${{ steps.set-variables.outputs.rinkeby_rpc_url }}
                   REACT_APP_XDAI_RPC_URL: ${{ steps.set-variables.outputs.xdai_rpc_url }}
-                  REACT_APP_INFURA_API_KEY: ${{ steps.set-variables.outputs.infura_api_key }}
                   REACT_APP_SEGMENT_API_KEY: ${{ steps.set-variables.outputs.segment_api_key }}
                   REACT_APP_BUGSNAG_API_KEY: ${{ steps.set-variables.outputs.bugsnag_api_key }}
                   REACT_APP_BLOCKED_REGION: "US,TW"

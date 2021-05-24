@@ -76,6 +76,7 @@ jobs:
                   REACT_APP_INFURA_API_KEY: ${{ steps.set-variables.outputs.infura_api_key }}
                   REACT_APP_SEGMENT_API_KEY: ${{ steps.set-variables.outputs.segment_api_key }}
                   REACT_APP_BUGSNAG_API_KEY: ${{ steps.set-variables.outputs.bugsnag_api_key }}
+                  REACT_APP_BLOCKED_REGION: "US,TW"
 
             - name: Upload website to S3
               uses: jakejarvis/s3-sync-action@master

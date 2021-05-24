@@ -51,7 +51,7 @@ function UserAgreementModal() {
                         >
                             &nbsp;Docs&nbsp;
                         </ExternalLink>
-                        to know more
+                        to know more.
                     </Text>
                     <br />
                     <Text>

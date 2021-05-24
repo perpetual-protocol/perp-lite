@@ -1,26 +1,23 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+
+import { Connection } from "container/connection"
 import GetStarted from "./component/GetStarted"
 import Position from "./component/Position"
 import TradeComponent from "./component/Trade"
-import { User } from "container/user"
 
 const Home = () => {
     const [tabIndex, setTabIndex] = useState(0)
 
-    // Need review: 偵測到 connect wallet 以後，設定  setTabIndex(1)，才不必每次都看到 get started
-
-    const {
-        state: { address },
-    } = User.useContainer()
-
+    // NOTE: Focus the trade tab once wallet is connected.
+    const { account } = Connection.useContainer()
     useEffect(() => {
-        if (address) {
+        if (account) {
             setTabIndex(1)
         } else {
             setTabIndex(0)
         }
-    }, [address])
+    }, [account])
 
     return (
         <Tabs size="md" mt={5} index={tabIndex} onChange={index => setTabIndex(index)} variant="enclosed">

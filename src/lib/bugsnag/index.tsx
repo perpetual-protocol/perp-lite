@@ -19,7 +19,5 @@ export function createErrorBoundary() {
     if (!plugin) {
         return ({ children }: { children: React.ReactNode }) => <>{children}</>
     }
-
-    console.log("plugin", plugin)
     return plugin.createErrorBoundary(React)
 }

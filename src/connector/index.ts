@@ -3,6 +3,7 @@ import { IS_MAINNET } from "../constant/stage"
 import { InjectedConnector } from "@web3-react/injected-connector"
 import { NetworkConnector } from "@web3-react/network-connector"
 import { providers } from "ethers"
+import { isWebsocket } from "util/is"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
 // import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 // import { LedgerConnector } from '@web3-react/ledger-connector'
@@ -21,11 +22,11 @@ export enum CHAIN_ID {
     XDai = 100,
 }
 
-const { REACT_APP_INFURA_API_KEY, REACT_APP_XDAI_RPC_URL } = process.env
+const { REACT_APP_MAINNET_RPC_URL, REACT_APP_RINKEBY_RPC_URL, REACT_APP_XDAI_RPC_URL } = process.env
 
 const RPC_URLS = {
-    [CHAIN_ID.Ethereum]: `https://mainnet.infura.io/v3/${REACT_APP_INFURA_API_KEY}`,
-    [CHAIN_ID.Rinkeby]: `https://rinkeby.infura.io/v3/${REACT_APP_INFURA_API_KEY}`,
+    [CHAIN_ID.Ethereum]: REACT_APP_MAINNET_RPC_URL!,
+    [CHAIN_ID.Rinkeby]: REACT_APP_RINKEBY_RPC_URL!,
     [CHAIN_ID.XDai]: REACT_APP_XDAI_RPC_URL!,
 }
 
@@ -35,22 +36,21 @@ export const network = new NetworkConnector({
 })
 
 export function getNetworkLibrary(): Web3Provider {
-    return (new providers.InfuraProvider(
-        IS_MAINNET ? "homestead" : "rinkeby",
-        process.env.REACT_APP_INFURA_API_KEY,
-    ) as unknown) as Web3Provider
+    const chainId = IS_MAINNET ? CHAIN_ID.Ethereum : CHAIN_ID.Rinkeby
+    const rpcUrl = RPC_URLS[chainId]!
+    if (isWebsocket(rpcUrl)) {
+        return (new providers.WebSocketProvider(rpcUrl, chainId) as unknown) as Web3Provider
+    } else {
+        return (new providers.JsonRpcProvider(rpcUrl, chainId) as unknown) as Web3Provider
+    }
 }
 
 export function getXDaiNetworkLibrary(): Web3Provider {
-    function isWebsocket(url: string) {
-        const protocol = url.split(":")[0]
-        return protocol === "wss"
-    }
-
-    if (isWebsocket(RPC_URLS[CHAIN_ID.XDai])) {
-        return (new providers.WebSocketProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+    const rpcUrl = RPC_URLS[CHAIN_ID.XDai]
+    if (isWebsocket(rpcUrl)) {
+        return (new providers.WebSocketProvider(rpcUrl, CHAIN_ID.XDai) as unknown) as Web3Provider
     } else {
-        return (new providers.JsonRpcProvider(RPC_URLS[CHAIN_ID.XDai], CHAIN_ID.XDai) as unknown) as Web3Provider
+        return (new providers.JsonRpcProvider(rpcUrl, CHAIN_ID.XDai) as unknown) as Web3Provider
     }
 }
 

@@ -35,3 +35,10 @@ REACT_APP_XDAI_RPC_URL= /* xDai rpc url */
 REACT_APP_BUGSNAG_API_KEY= /* bugsnag api key */
 REACT_APP_SEGMENT_API_KEY= /* segment api key */
 ```
+
+### Deploy to IPFS
+-   run `yarn`
+-   run `yarn generate-type`
+-   run `yarn build`
+-   run `yarn deploy-ipfs`
+    - Note: Using `ipfs-deploy@v8.0.1` because newer version needs node v14

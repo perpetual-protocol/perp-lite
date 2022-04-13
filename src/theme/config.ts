@@ -1,7 +1,7 @@
 import { ColorMode } from "@chakra-ui/react"
 
 const config = {
-    initialColorMode: "light" as ColorMode,
+    initialColorMode: "dark" as ColorMode,
     useSystemColorMode: false,
 }
 

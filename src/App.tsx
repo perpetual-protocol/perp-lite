@@ -10,7 +10,7 @@ import BlockedRegionModal from "component/BlockedRegionModal"
 import UserAgreementModal from "component/UserAgreementModal"
 
 export const App = () => (
-    <Container maxW="container.md" pb={20} px={6}>
+    <Container maxW="container.lg" pb={20} px={6}>
         <Header />
         <Divider />
         <Switch>

@@ -1,4 +1,5 @@
-import { SimpleGrid, VStack } from "@chakra-ui/react"
+import { SimpleGrid, VStack, Box } from "@chakra-ui/react"
+import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets"
 
 import Collateral from "./Collateral"
 import Leverage from "./Leverage"
@@ -22,6 +23,9 @@ function Trade() {
             </VStack>
             <VStack p={0} spacing={6}>
                 <Summary />
+                <Box width="100%" height="100%">
+                    <AdvancedRealTimeChart theme="dark" autosize />
+                </Box>
             </VStack>
         </SimpleGrid>
     )
